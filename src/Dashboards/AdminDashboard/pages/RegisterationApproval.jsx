@@ -17,7 +17,6 @@ export const RegisterationApproval = () => {
                     setLoading(false)
                     return
                 }
-                console.log(123)
                 const response = await axios.get("http://localhost:8082/admin/users/unApproved", {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -25,9 +24,8 @@ export const RegisterationApproval = () => {
                         
                     }
                 })
-                console.log(12)
                 console.log(response)
-               // setUsers(response.data)
+                setUsers(response.data)
 
             } catch (error) {
                 setError("Error Fetching users")
@@ -49,7 +47,7 @@ export const RegisterationApproval = () => {
                 ) : error ? (
                     <p className="text-red-500">{error}</p>
                 ) : (
-                    <UsersTable users={users} setUsers={setUsers} />
+                    <UsersTable users={users}/>
                 )}
             </div>
         </>
