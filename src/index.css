@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400&display=swap');
+
+
+@theme{
+    --font-lexend:Lexend,"sans-serif"
+}
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #e5e7eb; /* Gray-200 */
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #9ca3af; /* Gray-400 */
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #6b7280; /* Gray-500 */
+  }
+  
+
+@import "tailwindcss"
+
+
+ 
