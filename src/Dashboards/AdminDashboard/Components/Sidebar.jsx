@@ -12,10 +12,10 @@ export  const Sidebar = () => {
    navigate('/login')
   }
   return (
-    <div className="w-64 h-screen bg-blue-400 shadow-md p-4 flex flex-col justify-between">
+    <div className="w-61 h-screen bg-slate-400 shadow-md p-4 flex flex-col justify-between">
       <div>
         <div className="ml-4 mb-5">
-          <img src="https://cdaccybergyan.uat.dcservices.in/images/cdac-wo-bg.png" alt="CDAC" className="size-45 cursor-pointer" onClick={()=>navigate("/admin")}/>
+          <img src="https://cdaccybergyan.uat.dcservices.in/images/cdac-wo-bg.png" alt="CDAC" className="size-36 cursor-pointer" onClick={()=>navigate("/admin")}/>
         </div>
         <nav>
           <ul className="">

@@ -3,8 +3,8 @@ import { FiBell, FiMessageSquare, FiUserPlus } from "react-icons/fi";
 export const Header = () => {
     return (
         <>
-            <header className="flex justify-between items-center p-4 shadow-sm bg-blue-400">
-                <h1 className="text-3xl font-bold font-sans bg-gradient-to-r from-blue-700 to-blue-900 text-transparent bg-clip-text">CyberShakti: Empowering Indian Women Government Officials in Cybersecurity</h1>
+            <header className="flex justify-between items-center p-2 shadow-sm bg-slate-400">
+                <h1 className="text-3xl font-bold font-sans  bg-blue-800 text-transparent bg-clip-text">CyberShakti: Empowering Indian Women Government Officials in Cybersecurity</h1>
                 <div className="flex items-center space-x-3">
                     {/* Notification Bell */}
                     <FiBell className="text-gray-600 cursor-pointer" size={25} />
