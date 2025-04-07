@@ -163,10 +163,10 @@ export const Login = () => {
         toast.success("Login Successful")
        redirectToDashboard(role)
       } catch (error) {
-        alert("Login Failed" + error)
+        toast.error("Login Failed" + error)
       }
     } catch (error) {
-      alert("Error verifying OTP");
+      toast.error("Error verifying OTP");
     }
   };
 
@@ -179,7 +179,7 @@ export const Login = () => {
     <div className="flex flex-col min-h-screen bg-gray-100">
        <ToastContainer position="top-center" autoClose={3000} />
       {/* Navbar */}
-      <div className="h-20 w-full bg-blue-100 flex items-center px-4 justify-between shadow-md">
+      <div className="h-20 w-full bg-purple-950 flex items-center px-4 justify-between shadow-md">
         <Link to="/">
           <img
             src="https://cdaccybergyan.uat.dcservices.in/images/cdac-logo.png"
@@ -189,7 +189,7 @@ export const Login = () => {
         </Link>
         <Link
           to="/"
-          className="text-blue-800 font-semibold font-[Poppin] text-3xl px-4 py-2 rounded hover:text-blue-900 transition-all duration-300"
+          className="text-white font-semibold font-[Poppin] text-4xl px-4 py-2 rounded hover:text-purple-700 transition-all duration-300"
         >
           Home
         </Link>
@@ -199,14 +199,14 @@ export const Login = () => {
       <main className="flex-grow flex items-center justify-center p-6">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl flex">
           {/* Left Section - Welcome Message */}
-          <div className="w-1/2 bg-blue-700 text-white flex flex-col items-center justify-center p-8">
+          <div className="w-1/2 bg-purple-700 text-white flex flex-col items-center justify-center p-8">
             <img
               src="https://i0.wp.com/opportunitycell.com/wp-content/uploads/2023/08/Centre-For-Development-Of-Advanced-Computing-CDAC-logo.png?fit=1000%2C1000&ssl="
               alt="CDAC Logo"
               className="h-50 w-50 mb-4"
             />
             <h2 className="text-4xl font-extrabold text-center">
-              Welcome, <span className="text-blue-300">{fullName}</span>
+              Welcome, <span className="text-purple-300">User</span>
             </h2>
             <p className="text-lg text-center mt-4">
               Step into your training journey with <strong>CDAC Noida</strong>.
@@ -216,14 +216,14 @@ export const Login = () => {
 
           {/* Right Section - Login Form */}
           <div className="w-1/2 p-6">
-            <h2 className="text-2xl font-bold text-blue-700 text-center mb-4">Login</h2>
+            <h2 className="text-2xl font-bold text-purple-700 text-center mb-4">Login</h2>
             <form
               onSubmit={handleSubmit}
               className="space-y-4">
               {!isOtpMode ? (
                 <>
                   {/* Username */}
-                  <div className="flex items-center border rounded p-2 bg-blue-50">
+                  <div className="flex items-center border rounded p-2 bg-purple-50">
                     <FaUser className="text-gray-600 mr-2" />
                     <div className="w-full">
                       <label className="block text-gray-800 font-semibold">Username</label>
@@ -240,7 +240,7 @@ export const Login = () => {
                   </div>
 
                   {/* Password */}
-                  <div className="flex items-center border rounded p-2 bg-blue-50 relative">
+                  <div className="flex items-center border rounded p-2 bg-purple-50 relative">
                     <FaLock className="text-gray-600 mr-2" />
                     <div className="w-full">
                       <label className="block text-gray-800 font-semibold">Password</label>
@@ -267,7 +267,7 @@ export const Login = () => {
                   <button
                     type="submit"
 
-                    className="w-full bg-blue-700 text-white font-semibold text-lg p-2 rounded cursor-pointer hover:bg-blue-800"
+                    className="w-full bg-purple-700 text-white font-semibold text-lg p-2 rounded cursor-pointer hover:bg-purple-800"
                   >
                     Login with Password
                   </button>
@@ -275,7 +275,7 @@ export const Login = () => {
               ) : (
                 <>
                   {/* Email Field */}
-                  <div className="flex items-center border rounded p-2 bg-blue-50">
+                  <div className="flex items-center border rounded p-2 bg-purple-50">
                     <FaEnvelope className="text-gray-600 mr-2" />
                     <div className="w-full">
                       <label className="block text-gray-800 font-semibold">Email</label>
@@ -295,13 +295,13 @@ export const Login = () => {
                   <button
                     type="button"
                     onClick={handleSendOtp}
-                    className="w-30 h-10 bg-blue-700 text-white font-semibold text-md p-2 rounded cursor-pointer hover:bg-blue-800"
+                    className="w-30 h-10 bg-purple-700 text-white font-semibold text-md p-2 rounded cursor-pointer hover:bg-purple-800"
                   >
                     {isOtpSent ? "Resend OTP" : "Verify Email"}
                   </button>
 
                   {/* OTP Input */}
-                  <div className="flex items-center border rounded p-2 bg-blue-50">
+                  <div className="flex items-center border rounded p-2 bg-purple-50">
                     <FaKey className="text-gray-600 mr-2" />
                     <div className="w-full">
                       <label className="block text-gray-800 font-semibold">OTP</label>
@@ -322,7 +322,7 @@ export const Login = () => {
                   <button
                     type="button"
                     onClick={handleOtpLogin}
-                    className="w-full bg-blue-700 text-white  text-lg p-2 rounded cursor-pointer hover:bg-blue-800"
+                    className="w-full bg-purple-700 text-white  text-lg p-2 rounded cursor-pointer hover:bg-purple-800"
                   >
                     Login with OTP
                   </button>
@@ -333,7 +333,7 @@ export const Login = () => {
               <button
                 type="button"
                 onClick={() => setIsOtpMode(!isOtpMode)}
-                className="w-full text-blue-700 cursor-pointer font-semibold mt-2"
+                className="w-full text-purple-700 cursor-pointer font-semibold mt-2"
               >
                 {isOtpMode ? "Login with Password" : "Login with OTP"}
               </button>
@@ -341,7 +341,7 @@ export const Login = () => {
               {/* Register Redirect */}
               <p className="text-center text-gray-600">
                 Don't have an account?{" "}
-                <Link to="/signup" className="text-blue-700 font-semibold hover:underline">
+                <Link to="/signup" className="text-purple-700 font-semibold hover:underline">
                   Register
                 </Link>
               </p>

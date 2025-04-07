@@ -209,27 +209,31 @@ export const Signup = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <div className="h-20 w-full bg-blue-100 flex items-center px-4 justify-between shadow-md">
+      <div className="h-20 w-full bg-purple-950 flex items-center px-4 justify-between shadow-md">
         <Link to="/">
           <img src="https://cdaccybergyan.uat.dcservices.in/images/cdac-logo.png" alt="cdac" className="h-14" />
         </Link>
-        <Link to="/" className="text-blue-800 hover:text-blue-900 font-[Poppin] text-3xl px-4 py-2 rounded transition-all duration-300">Home</Link>
-      </div>
+        <Link
+          to="/"
+          className="text-white font-semibold font-[Poppin] text-4xl px-4 py-2 rounded hover:text-purple-700 transition-all duration-300"
+        >
+          Home
+        </Link>      </div>
 
       <main className="flex-grow flex items-center justify-center p-6">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl flex">
-          <div className="w-1/2 bg-blue-700 text-white flex flex-col items-center justify-center p-8">
+          <div className="w-1/2 bg-purple-700 text-white flex flex-col items-center justify-center p-8">
             <img src="https://i0.wp.com/opportunitycell.com/wp-content/uploads/2023/08/Centre-For-Development-Of-Advanced-Computing-CDAC-logo.png?fit=1000%2C1000&ssl=" alt="CDAC Logo" className="h-60 mb-4 w-60 mt-[-90px]" />
             <h2 className="text-4xl font-extrabold text-center">CyberSecurity</h2>
             <p className="text-lg text-center mt-4">Join our <strong>Virtual Training Program</strong> conducted by <strong>CDAC Noida</strong>. Enhance your skills with expert training!</p>
           </div>
 
           <div className="w-1/2 p-6">
-            <h2 className="text-2xl font-bold text-blue-700 text-center mb-4">Register</h2>
+            <h2 className="text-2xl font-bold text-purple-700 text-center mb-4">Register</h2>
             <form className="space-y-4" onSubmit={handleSubmit}>
 
               {/* Full Name Field */}
-              <div className="flex items-center border rounded p-2 bg-blue-50">
+              <div className="flex items-center border rounded p-2 bg-purple-50">
                 <FaUser className="text-gray-600 mr-2" />
                 <div className="w-full">
                   <label className="block text-gray-800 font-semibold">Full Name</label>
@@ -247,7 +251,7 @@ export const Signup = () => {
               {errors.fullname && <p className="text-red-600 text-sm mt-1">{errors.fullname}</p>}
 
               {/* Email Field */}
-              <div className="flex items-center border rounded p-2 bg-blue-50">
+              <div className="flex items-center border rounded p-2 bg-purple-50">
                 <FaEnvelope className="text-gray-600 mr-2" />
                 <div className="w-full">
                   <label className="block text-gray-800 font-semibold">Email</label>
@@ -265,7 +269,7 @@ export const Signup = () => {
               {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
 
               {/* Mobile Field */}
-              <div className="flex items-center border rounded p-2 bg-blue-50">
+              <div className="flex items-center border rounded p-2 bg-purple-50">
                 <FaMobileAlt className="text-gray-600 mr-2" />
                 <div className="w-full">
                   <label className="block text-gray-800 font-semibold">Mobile</label>
@@ -284,7 +288,7 @@ export const Signup = () => {
 
               {/* State Field */}
               <div className="relative w-full">
-              <div className="flex items-center border rounded p-2 bg-blue-50">
+              <div className="flex items-center border rounded p-2 bg-purple-50">
                 <TbHomeFilled className="text-gray-800 mr-2 size-5" />
                 <div className="w-full">
                   <label className="block text-gray-800 font-semibold">State</label>
@@ -318,7 +322,7 @@ export const Signup = () => {
 
               {/* Organization Field */}
               <div className="relative w-full">
-                <div className="flex items-center border rounded p-2 bg-blue-50">
+                <div className="flex items-center border rounded p-2 bg-purple-50">
                   <VscOrganization className="text-gray-800 mr-1 size-5" />
                   <div className="w-full">
                     <label className="block text-gray-800 font-semibold">Organization</label>
@@ -354,7 +358,7 @@ export const Signup = () => {
               {errors.organization && <p className="text-red-600 text-sm mt-1">{errors.organization}</p>}
 
               {/* Designation Field */}
-              <div className="flex items-center border rounded p-2 bg-blue-50">
+              <div className="flex items-center border rounded p-2 bg-purple-50">
                 <FaBriefcase className="text-gray-800 mr-2 size-5" />
                 <div className="w-full">
                   <label className="block text-gray-800 font-semibold">Designation</label>
@@ -372,7 +376,7 @@ export const Signup = () => {
               {errors.designation && <p className="text-red-600 text-sm mt-1">{errors.designation}</p>}
 
               {/* Document Upload Section */}
-              <div className="flex items-center border rounded p-3 bg-blue-50 relative w-full">
+              <div className="flex items-center border rounded p-3 bg-purple-50 relative w-full">
                 {/* Left Section: Icon & Label */}
                 <div className="flex items-center gap-2">
                   <IoDocumentText className="text-gray-800 size-6" />
@@ -412,7 +416,7 @@ export const Signup = () => {
               {errors.document && <p className="text-red-600 text-sm mt-1">{errors.document}</p>}
 
               {/* Username Field */}
-              <div className="flex items-center border rounded p-2 bg-blue-50">
+              <div className="flex items-center border rounded p-2 bg-purple-50">
                 <FaUser className="text-gray-600 mr-2" />
                 <div className="w-full">
                   <label className="block text-gray-800 font-semibold">Username</label>
@@ -430,7 +434,7 @@ export const Signup = () => {
               {errors.username && <p className="text-red-600 text-sm mt-1">{errors.username}</p>}
 
               {/* Password Field */}
-              <div className="flex items-center border rounded p-2 bg-blue-50 relative">
+              <div className="flex items-center border rounded p-2 bg-purple-50 relative">
                 <FaLock className="text-gray-600 mr-2" />
                 <div className="w-full">
                   <label className="block text-gray-800 font-semibold">Password</label>
@@ -451,7 +455,7 @@ export const Signup = () => {
               {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
 
               {/* Submit Button */}
-              <button type="submit" className="w-full bg-blue-700 text-white font-semibold text-lg p-2 rounded cursor-pointer hover:bg-blue-800">
+              <button type="submit" className="w-full bg-purple-700 text-white font-semibold text-lg p-2 rounded cursor-pointer hover:bg-purple-800">
                 Register
               </button>
 
@@ -459,7 +463,7 @@ export const Signup = () => {
               <div className="text-center mt-4">
                 <p className="text-gray-600">
                   Already have an account?{" "}
-                  <Link to="/login" className="text-blue-700 font-semibold hover:underline">
+                  <Link to="/login" className="text-purple-700 font-semibold hover:underline">
                     Login here
                   </Link>
                 </p>

@@ -128,13 +128,13 @@ export const Calendar = () => {
 
             <div className="flex mt-5 flex-grow">
                 {/* Left Section */}
-                <div className={`w-1/3 p-5 rounded-md bg-gradient-to-r from-blue-600 to-blue-900 overflow-y-auto custom-scrollbar`}>
+                <div className={`w-1/3 p-5 rounded-md bg-gradient-to-r from-purple-600 to-purple-900 overflow-y-auto custom-scrollbar`}>
                     <h2 className="text-3xl text-white font-lexend  font-bold mb-4">Training Categories</h2>
 
                     {["offline", "virtual"].map((type) => (
                         <div key={type} className="relative">
                             <button
-                                className={`w-full h-15 p-2 border cursor-pointer rounded-lg mb-2 font-lexend font-semibold ${selectedType===type ? "bg-gradient-to-r from-blue-400 to-blue-900" : "bg-blue-700"} text-2xl text-white flex items-center justify-between`}
+                                className={`w-full h-15 p-2 border cursor-pointer rounded-lg mb-2 font-lexend font-semibold ${selectedType===type ? "bg-gradient-to-r from-purple-400 to-purple-900" : "bg-purple-700"} text-2xl text-white flex items-center justify-between`}
                                 onClick={() => toggleCategory(type)}
                             >
                                 <div className="flex items-center gap-2">

@@ -10,9 +10,9 @@ export const Home = () => {
     <div>
       {/* Hero Section */}
       <Element name="home">
-      <div className="bg-gradient-to-br from-[#1E0B39] via-[#7B1FA2] to-[#D4145A] w-full h-180  mt-3 rounded-lg flex items-center justify-center relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#1E0B39] via-[#7B1FA2] to-[#D4145A] w-full h-170 mt-3 rounded-lg flex items-center justify-center relative overflow-hidden">
       
-      <div className="bg-gradient-to-bl from-[#1E0B39] via-[#7B1FA2] to-[#D4145A] h-150 w-430 rounded-xl flex flex-row items-center p-10 relative">
+      <div className="bg-gradient-to-bl from-[#1E0B39] via-[#7B1FA2] to-[#D4145A] h-150 w-450 rounded-xl flex flex-row items-center p-10 relative">
         
         {/* Left Side - Text Content */}
         <div className="flex flex-col justify-between items-start h-full w-2/3">

@@ -2,9 +2,9 @@ export const TrainingCard = ({ title, startDate, endDate, description, isHighlig
     return (
         <div
             className={`p-6 border rounded-lg text-center shadow-md  flex flex-col justify-between h-full
-                ${type=== "offline" ? "bg-gradient-to-br from-blue-100 to-blue-400" : "bg-gradient-to-br from-blue-50 to-blue-500"}`}
+                ${type=== "offline" ? "bg-gradient-to-br from-purple-100 to-purple-400" : "bg-gradient-to-br from-purple-50 to-purple-500"}`}
         >
-            <h3 className="text-2xl font-bold font-lexend text-center bg-gradient-to-br from-blue-400 to-blue-800 rounded-lg p-2">
+            <h3 className="text-2xl font-bold font-lexend text-center bg-gradient-to-br from-purple-400 to-purple-800 rounded-lg p-2">
                 {title}
             </h3>
   
@@ -25,12 +25,12 @@ export const TrainingCard = ({ title, startDate, endDate, description, isHighlig
                 </div>}
   
             <div className="flex-grow flex items-center justify-center mt-5">
-                <p className="text-xl text-blue-900 font-semibold">{description}</p>
+                <p className="text-xl text-purple-900 font-semibold">{description}</p>
             </div>
   
         
             <div className="flex justify-center mt-5">
-                <button className="px-6 py-3 bg-blue-700 text-white rounded-lg cursor-pointer hover:bg-blue-800">
+                <button className="px-6 py-3 bg-purple-700 text-white rounded-lg cursor-pointer hover:bg-purple-800">
                     Register
                 </button>
             </div>
