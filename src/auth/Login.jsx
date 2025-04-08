@@ -60,17 +60,22 @@ export const Login = () => {
       }
 
 
-      const response = await axios.post(`http://localhost:8082/sendLoginOTP?username=${formData.email}`, {
+      const response = await axios.post(`http://localhost:8082/sendLoginOTP?username=${formData.email}`, {},{
         headers: {
           "Content-Type": "application/json",
         },
       });
-      if (response.data.success) {
+      if (response.status === 200) {
         setIsOtpSent(true);
-        toast.success("OTP is sent to your mail")
+        toast.success("OTP is sent to your mail");
+      } else {
+        console.error("OTP Error:", error.response?.data || error.message);
+        toast.error(error.response?.data );
       }
+      
     } catch (error) {
-      toast.error("Error sending OTP. Please try again")
+      console.error("OTP Error:", error.response?.data || error.message);
+      toast.error(error.response?.data)
     }
   };
   const handlePasswordLogin = async () => {
@@ -119,12 +124,19 @@ export const Login = () => {
         console.log("Extracted Role:", role);
        
         localStorage.setItem("authToken", token)
-        toast.success("Login Successful")
-        redirectToDashboard(role)
+        toast.success("Login Successful");
+        setTimeout(() => {
+          redirectToDashboard(role);
+        }, 500); 
+        
+        // redirectToDashboard(role)
       } catch (error) {
         toast.error("Login Failed")
       }
     } catch (error) {
+      const message =
+        error?.response?.data|| "Invalid credentials or server error";
+      toast.error(message); 
       console.error("Error Logging In:", error?.response?.data || error);
     }
   };
@@ -160,13 +172,17 @@ export const Login = () => {
         const role=decodedToken?.role
         console.log(decodedToken)
         localStorage.setItem("authToken", token)
-        toast.success("Login Successful")
-       redirectToDashboard(role)
+        toast.success("Login Successful");
+        setTimeout(() => {
+          redirectToDashboard(role);
+        }, 500); 
       } catch (error) {
         toast.error("Login Failed" + error)
       }
     } catch (error) {
-      toast.error("Error verifying OTP");
+      const message=error?.response?.data || "Error Verifying OTP"
+      toast.error(message)
+      console.error("OTP Login Error:", error?.response?.data || error)
     }
   };
 

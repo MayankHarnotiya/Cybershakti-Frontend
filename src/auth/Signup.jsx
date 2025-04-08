@@ -6,6 +6,8 @@ import { VscOrganization } from "react-icons/vsc";
 import { Footer } from "../Components/Footer";
 import { IoDocumentText } from "react-icons/io5";
 import { TbHomeFilled } from "react-icons/tb";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Signup = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +16,7 @@ export const Signup = () => {
     email: "",
     password: "",
     mobile: "",
-    state:"",
+    state: "",
     organization: "",
     designation: "",
     document: null,
@@ -27,7 +29,7 @@ export const Signup = () => {
     "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
     "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan",
     "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
-    "Uttarakhand", "West Bengal","Delhi"
+    "Uttarakhand", "West Bengal", "Delhi"
   ];
 
   const organizationsList = [
@@ -39,10 +41,10 @@ export const Signup = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
- 
-  const [stateInput,setStateInput]=useState("")
-  const[filteredStates,setFilteredStates]=useState([])
-  const[showStateDropdown,setShowStateDropDown]=useState(false)
+
+  const [stateInput, setStateInput] = useState("")
+  const [filteredStates, setFilteredStates] = useState([])
+  const [showStateDropdown, setShowStateDropDown] = useState(false)
 
   const [filteredOrgs, setFilteredOrgs] = useState([]);
   const [orgInput, setOrgInput] = useState("");
@@ -54,42 +56,42 @@ export const Signup = () => {
   //     .catch(error => console.error("Error fetching organizations:", error));
   // }, []);
 
-    // Close dropdowns when clicking outside
+  // Close dropdowns when clicking outside
 
-    const handleStateChange = (e) => {
-      const value = e.target.value;
-      setStateInput(value);
-      // Filter the states list based on the input, making it case-insensitive
-      const filtered = value
-        ? statesList.filter((state) =>
-            state.toLowerCase().includes(value.toLowerCase().trim())
-          )
-        : [];
-      setFilteredStates(filtered);
-      setShowStateDropDown(value !== "");
-    };
-    
+  const handleStateChange = (e) => {
+    const value = e.target.value;
+    setStateInput(value);
+    // Filter the states list based on the input, making it case-insensitive
+    const filtered = value
+      ? statesList.filter((state) =>
+        state.toLowerCase().includes(value.toLowerCase().trim())
+      )
+      : [];
+    setFilteredStates(filtered);
+    setShowStateDropDown(value !== "");
+  };
 
 
-  const handleSelectState=(state)=>{
+
+  const handleSelectState = (state) => {
     setStateInput(state)
-    setFormData(prev=>({...prev,state}))
+    setFormData(prev => ({ ...prev, state }))
     setShowStateDropDown(false)
   }
 
-  const handleOrgChange=(e)=>{
-    const value=e.target.value
+  const handleOrgChange = (e) => {
+    const value = e.target.value
     setOrgInput(value)
-    setFilteredOrgs(value ? organizationsList.filter(org=>org.toLowerCase().includes(value.toLowerCase())) : [])
+    setFilteredOrgs(value ? organizationsList.filter(org => org.toLowerCase().includes(value.toLowerCase())) : [])
     setShowOrgDropdown(value !== "")
   }
 
-  const handleSelectOrg=(org)=>{
+  const handleSelectOrg = (org) => {
     setOrgInput(org)
-    setFormData(prev=>({...prev,organization:org}))
+    setFormData(prev => ({ ...prev, organization: org }))
     setShowOrgDropdown(false)
   }
- 
+
   const validate = (name, value) => {
     switch (name) {
       case "fullname":
@@ -111,7 +113,9 @@ export const Signup = () => {
         if (value.length < 8 || value.length > 40) return "Password must be 8-40 characters";
         break;
       case "mobile":
-        if (value && !/^\d{10}$/.test(value)) return "Must be 10 digits";
+        if (!value) return "Mobile number is required";
+        if (!/^\d+$/.test(value)) return "Mobile number must contain only digits";
+        if (value.length !== 10) return "Mobile number must be exactly 10 digits";
         break;
       case "state":
         if (!value) return "State is required";
@@ -122,7 +126,7 @@ export const Signup = () => {
     }
     return "";
   };
-  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -171,15 +175,12 @@ export const Signup = () => {
     if (!validateForm()) return;
 
     try {
-
       const encryptRes = await axios.post("http://localhost:8082/encryptPassword", null, {
         params: { password: formData.password },
       });
 
       const encryptedPassword = encryptRes.data;
 
-
-      const formDataToSend = new FormData();
       const signupRequest = {
         fullName: formData.fullname,
         userName: formData.username,
@@ -189,26 +190,52 @@ export const Signup = () => {
         designation: formData.designation,
         organisation: orgInput,
         state: stateInput,
-
       };
 
-      formDataToSend.append("signupRequest", new Blob([JSON.stringify(signupRequest)], { type: "application/json" }));
-      formDataToSend.append("id", formData.document);
-      console.log(signupRequest, formDataToSend.signupRequest, formDataToSend.id, formData.document)
-      const response = await axios.post("http://localhost:8082/signup", formDataToSend, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const formDataToSend = new FormData();
+      formDataToSend.append(
+        "signupRequest",
+        new Blob([JSON.stringify(signupRequest)], { type: "application/json" })
+      );
 
+      if (formData.document instanceof File) {
+        formDataToSend.append("id", formData.document);
+      } else {
+        toast.error("Please upload a valid document");
+        return;
+      }
+
+      // // Optional: log form data
+      // for (let pair of formDataToSend.entries()) {
+      //   console.log(`${pair[0]}:`, pair[1]);
+      // }
+
+      const response = await axios.post("http://localhost:8082/signup", formDataToSend);
+
+      toast.success("User Registered Successfully");
       console.log("Registration successful:", response.data);
-      alert("User registered successfully!");
+      setFormData({
+        fullname: "",
+        username: "",
+        password: "",
+        email: "",
+        mobile: "",
+        designation: "",
+        document: null, 
+      });
+      setOrgInput("");    
+      setStateInput(""); 
+
     } catch (error) {
       console.error("Error registering user:", error.response?.data || error.message);
-      alert("Registration failed! " + (error.response?.data || error.message));
+      toast.error("Registration failed! " + (error.response?.data || error.message));
     }
-  }
+  };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
+      <ToastContainer position="top-center" autoClose={3000} />
       <div className="h-20 w-full bg-purple-950 flex items-center px-4 justify-between shadow-md">
         <Link to="/">
           <img src="https://cdaccybergyan.uat.dcservices.in/images/cdac-logo.png" alt="cdac" className="h-14" />
@@ -278,6 +305,7 @@ export const Signup = () => {
                     name="mobile"
                     value={formData.mobile}
                     onChange={handleChange}
+                    maxLength={10}
                     className="w-full outline-none bg-transparent"
                     placeholder="Enter your mobile number"
                     autoComplete="tel"
@@ -288,23 +316,23 @@ export const Signup = () => {
 
               {/* State Field */}
               <div className="relative w-full">
-              <div className="flex items-center border rounded p-2 bg-purple-50">
-                <TbHomeFilled className="text-gray-800 mr-2 size-5" />
-                <div className="w-full">
-                  <label className="block text-gray-800 font-semibold">State</label>
-                  <input
-                    type="text"
-                    name="designation"
-                    value={stateInput}
-                    onChange={handleStateChange}
-                    className="w-full outline-none bg-transparent"
-                    placeholder="Enter your state"
-                  />
-                </div>
+                <div className="flex items-center border rounded p-2 bg-purple-50">
+                  <TbHomeFilled className="text-gray-800 mr-2 size-5" />
+                  <div className="w-full">
+                    <label className="block text-gray-800 font-semibold">State</label>
+                    <input
+                      type="text"
+                      name="state"
+                      value={stateInput}
+                      onChange={handleStateChange}
+                      className="w-full outline-none bg-transparent"
+                      placeholder="Enter your state"
+                    />
+                  </div>
                 </div>
 
-                  {/* State Dropdown */}
-                  {showStateDropdown && (
+                {/* State Dropdown */}
+                {showStateDropdown && (
                   <ul className="absolute w-full border bg-white shadow-md rounded mt-1 max-h-40 overflow-y-auto z-50">
                     {filteredStates.map((state, index) => (
                       <li
@@ -380,15 +408,15 @@ export const Signup = () => {
                 {/* Left Section: Icon & Label */}
                 <div className="flex items-center gap-2">
                   <IoDocumentText className="text-gray-800 size-6" />
-                  <label className="text-gray-800 font-semibold mb-4">Document</label>
+                  <label className="text-gray-800 font-semibold">Document</label>
                 </div>
 
-                {/* Center Section: File Preview (Only when a file is selected) */}
-                <div className="flex-1 text-center">
+                {/* Center Section: File Preview */}
+                <div className="flex-1 text-center px-2 overflow-hidden">
                   {formData.document && (
-                    <div className="flex items-center justify-center gap-2 text-gray-700">
-                      <FaFileAlt className="text-blue-600" />
-                      <p className="text-sm">{formData.document.name}</p>
+                    <div className="flex items-center justify-center gap-2 text-gray-700 overflow-hidden">
+                      <FaFileAlt className="text-blue-600 shrink-0" />
+                      <p className="text-sm truncate max-w-full">{formData.document.name}</p>
                     </div>
                   )}
                 </div>
@@ -403,15 +431,16 @@ export const Signup = () => {
                   onChange={handleFileChange}
                 />
 
-                {/* Right Section: Choose File Button (Always at Right) */}
+                {/* Right Section: Choose File Button */}
                 <label
                   htmlFor="fileInput"
-                  className="cursor-pointer bg-gray-200 px-3 py-2 text-md rounded-md hover:bg-gray-300 transition flex items-center gap-2 ml-auto"
+                  className="cursor-pointer bg-gray-200 px-3 py-2 text-md rounded-md hover:bg-gray-300 transition flex items-center gap-2 ml-auto shrink-0"
                 >
                   <FaFileAlt className="text-gray-600" />
                   Choose File
                 </label>
               </div>
+
               {/* Error Message */}
               {errors.document && <p className="text-red-600 text-sm mt-1">{errors.document}</p>}
 
