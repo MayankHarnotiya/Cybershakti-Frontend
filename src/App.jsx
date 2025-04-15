@@ -12,6 +12,7 @@ import { Dashboard } from "./Dashboards/AdminDashboard/Components/Dashboard";
 import { UserDashboard } from "./Dashboards/UserDashBaord/UserDashboard";
 import { RegisterationApproval } from "./Dashboards/AdminDashboard/pages/RegisterationApproval";
 import { AdminHome } from "./Dashboards/AdminDashboard/pages/AdminHome";
+import { Training } from "./Dashboards/AdminDashboard/pages/Training";
 
 function App() {
   const router = createBrowserRouter(
@@ -25,6 +26,7 @@ function App() {
           <Route path="/admin" element={<Dashboard />}>
             <Route index element={<AdminHome />} /> {/* Default Admin Home */}
             <Route path="approval" element={<RegisterationApproval />} /> {/* Corrected path */}
+            <Route path="add-training" element={<Training/>}/>
           </Route>
         </Route>
 

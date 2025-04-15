@@ -17,7 +17,7 @@ export const Login = () => {
     email: "",
     otp: "",
   });
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const [showPassword, setShowPassword] = useState(false);
   const [isOtpMode, setIsOtpMode] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -60,7 +60,7 @@ export const Login = () => {
       }
 
 
-      const response = await axios.post(`http://localhost:8082/sendLoginOTP?username=${formData.email}`, {},{
+      const response = await axios.post(`${BASE_URL}/sendLoginOTP?username=${formData.email}`, {},{
         headers: {
           "Content-Type": "application/json",
         },
@@ -85,7 +85,7 @@ export const Login = () => {
         return;
       }
 
-      const encryptRes = await axios.post("http://localhost:8082/encryptPassword", null, {
+      const encryptRes = await axios.post(`${BASE_URL}/encryptPassword`, null, {
         params: { password: formData.password },
       });
 
@@ -97,7 +97,7 @@ export const Login = () => {
       // console.log("Sending Data:", formData);
       // console.log(formData)
       const response = await axios.post(
-        "http://localhost:8082/signin",
+        `${BASE_URL}/signin`,
         {
           userName: formData.username,
           password: encryptedPassword,
@@ -149,7 +149,7 @@ export const Login = () => {
         return;
       }
 
-      const response = await axios.post("http://localhost:8082/loginWithOTP", {
+      const response = await axios.post(`${BASE_URL}/loginWithOTP`, {
         username: formData.email,
         inputOTP: formData.otp,
       },

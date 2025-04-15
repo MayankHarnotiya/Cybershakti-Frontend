@@ -22,6 +22,7 @@ export const Signup = () => {
     document: null,
   });
 
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const statesList = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
@@ -38,7 +39,7 @@ export const Signup = () => {
   ];
 
 
-
+ const [isDisabled,setIsDisabled]=useState(false)
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -174,8 +175,10 @@ export const Signup = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setIsDisabled(true)
+
     try {
-      const encryptRes = await axios.post("http://localhost:8082/encryptPassword", null, {
+      const encryptRes = await axios.post(`${BASE_URL}/encryptPassword`, null, {
         params: { password: formData.password },
       });
 
@@ -202,6 +205,7 @@ export const Signup = () => {
         formDataToSend.append("id", formData.document);
       } else {
         toast.error("Please upload a valid document");
+        setIsDisabled(false)
         return;
       }
 
@@ -210,8 +214,9 @@ export const Signup = () => {
       //   console.log(`${pair[0]}:`, pair[1]);
       // }
 
-      const response = await axios.post("http://localhost:8082/signup", formDataToSend);
-
+    const response = await axios.post(`${BASE_URL}/signup`, formDataToSend);
+       
+   
       toast.success("User Registered Successfully");
       console.log("Registration successful:", response.data);
       setFormData({
@@ -229,6 +234,9 @@ export const Signup = () => {
     } catch (error) {
       console.error("Error registering user:", error.response?.data || error.message);
       toast.error("Registration failed! " + (error.response?.data || error.message));
+    }
+    finally{
+      setIsDisabled(false)
     }
   };
 
@@ -484,7 +492,7 @@ export const Signup = () => {
               {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
 
               {/* Submit Button */}
-              <button type="submit" className="w-full bg-purple-700 text-white font-semibold text-lg p-2 rounded cursor-pointer hover:bg-purple-800">
+              <button type="submit" disabled={isDisabled} className="w-full bg-purple-700 text-white font-semibold text-lg p-2 rounded cursor-pointer hover:bg-purple-800">
                 Register
               </button>
 

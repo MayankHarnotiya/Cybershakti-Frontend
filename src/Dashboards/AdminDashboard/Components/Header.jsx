@@ -3,24 +3,28 @@ import { FiBell, FiMessageSquare, FiUserPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
-    const navigate=useNavigate()
-    const handleLogout=()=>{
+    const navigate = useNavigate()
+    const handleLogout = () => {
         localStorage.removeItem("authToken")
         navigate('/login')
-       }
+    }
     return (
         <>
-            <div className="w-full h-20 bg-purple-950 flex space-x-335 ">
+            <div className="w-full h-20 bg-purple-950 flex items-center justify-between px-6">
                 <img
                     src="https://cdaccybergyan.uat.dcservices.in/images/cdac-logo.png"
                     alt="cdac"
-                    className="h-14 mt-2"
+                    className="h-14"
                 />
-                <div>
-                    <button className="text-lg text-white font-semibold pr-5 cursor-pointer mt-2" onClick={handleLogout}>  <BiLogOut size={36}  className=""/>Logout</button>
-
-                </div>
+                <button
+                    className="text-2xl cursor-pointer hover:text-purple-400 text-white font-semibold font-[poppins] flex items-center gap-2"
+                    onClick={handleLogout}
+                >
+                    <BiLogOut size={30} />
+                    Logout
+                </button>
             </div>
+
         </>
     );
 };

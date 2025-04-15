@@ -1,25 +1,57 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
-import { FaSpinner } from "react-icons/fa"; // Import spinner icon
+import { FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 
 
-export const Pending = ({ users: initialUsers }) => {
-    const [users, setUsers] = useState(initialUsers);
+export const Pending = ({pendingUsers,fetchPendingUsers,fetchApprovedUsers, fetchRejectedUsers}) => {
+    const [users, setUsers] = useState([]);
+    const [loading,setLoading]=useState(true)
     const [loadingApprove, setLoadingApprove] = useState({});
     const [loadingReject,setLoadingReject]=useState({})
     const token = localStorage.getItem("authToken");
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+    // const fetchPendingUsers = async () => {
+    //     try {
+    //         const token = localStorage.getItem("authToken")
+    //         if (!token) {
+    //             toast.error("Unauthorized.Please log in")
+    //             setLoading(false)
+    //             return
+    //         }
+    //         const response = await axios.get(`${BASE_URL}/admin/users/unApproved`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //                 'content-type': 'application/json'
+
+    //             }
+    //         })
+    //         console.log("unapproved",response)
+    //         setUsers(response.data)
+
+    //     } catch (error) {
+    //         toast.error("Error Fetching users")
+    //         console.log(error)
+    //     }
+    //     finally {
+    //         setLoading(false)
+    //     }
+    // }
+    useEffect(() => {     
+        fetchPendingUsers()
+    }, [])
 
     const handleApprove = async (userId) => {
         setLoadingApprove((prev) => ({ ...prev, [userId]: true }));
 
         try {
             const response = await axios.put(
-                `http://localhost:8082/admin/users/${userId}/approved`,
+                `${BASE_URL}/admin/users/${userId}/approved`,
                 {},
                 {
                     headers: {
@@ -27,17 +59,13 @@ export const Pending = ({ users: initialUsers }) => {
                     },
                 }
             );
-
-            if (response.status === 200) {
-                toast.success(response.data || "User approved successfully");
-
-                setUsers((prevUsers) =>
-                    prevUsers.filter((user)=>user.id !== userId)
-                );
-            }
+            fetchPendingUsers()
+            fetchApprovedUsers()
+            toast.success(response.data || "User approved successfully");
         } catch (error) {
-            console.error("Error approving user:", error);
-            toast.error("Failed to approve user");
+           const message=error?.response?.data || "Failed to approve user"
+            toast.error(message)
+            console.error("Error rejecting user:".message)
         } finally {
             setLoadingApprove((prev) => ({ ...prev, [userId]: false })); // Remove loading state
         }
@@ -47,7 +75,7 @@ export const Pending = ({ users: initialUsers }) => {
         setLoadingReject((prev) => ({ ...prev, [userId]: true }));
         try {
             const response=await axios.post(
-                `http://localhost:8082/admin/users/${userId}/reject`,
+                `${BASE_URL}/admin/users/${userId}/reject`,
                 {},
                 {
                     headers: {
@@ -56,11 +84,9 @@ export const Pending = ({ users: initialUsers }) => {
                 }
             )
             console.log(response)
-            if(response.status=== 200)
-            {
-                toast.success(response.data || "User rejected successfully")
-                setUsers((prevUsers)=>prevUsers.filter((user)=>user.id!==userId))
-            }
+            toast.success(response.data || "User rejected successfully")
+            fetchPendingUsers()
+            fetchRejectedUsers()
         } catch (error) {
             const message=error?.response?.data || "Failed to reject user"
             toast.error(message)
@@ -74,7 +100,7 @@ export const Pending = ({ users: initialUsers }) => {
     const fetchDocument = async (userId) => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/admin/user/${userId}/view`,
+                `${BASE_URL}/admin/user/${userId}/view`,
                 {
                     responseType: "blob",
                     headers: {
@@ -136,8 +162,8 @@ export const Pending = ({ users: initialUsers }) => {
                 </thead>
 
                 <tbody>
-                    {users.length > 0 ? (
-                        users.map((user) => (
+                    {pendingUsers.length > 0 ? (
+                        pendingUsers.map((user) => (
                             <tr key={user.id} className="text-center text-white">
                                 <td className="border p-2">{user.fullName}</td>
                                 <td className="border p-2">{user.email}</td>
@@ -160,7 +186,7 @@ export const Pending = ({ users: initialUsers }) => {
                                     <button
                                         className={`px-3 py-1 cursor-pointer flex items-center justify-center rounded w-[110px] h-[35px] ${user.approved
                                                 ? "bg-green-500 text-white cursor-default"
-                                                : "bg-green-700 text-white hover:bg-green-600"
+                                                : "bg-green-600 text-white hover:bg-green-700"
                                             }`}
                                         onClick={() => !user.approved && handleApprove(user.id)}
                                         disabled={loadingApprove[user.id] || user.approved}
@@ -180,7 +206,7 @@ export const Pending = ({ users: initialUsers }) => {
                                     <button
                                         className={`px-3 py-1 cursor-pointer flex items-center justify-center rounded w-[110px] h-[35px] ${user.approved
                                             ? "bg-red-500 text-white cursor-default"
-                                            : "bg-red-700 text-white hover:bg-red-600"
+                                            : "bg-red-600 text-white hover:bg-red-700"
                                         }`}
                                         onClick={() => !user.rejected &&  handleReject(user.id)}
                                          disabled={loadingReject[user.id] || user.rejected || user.approved} // Disable reject button while approving
@@ -201,7 +227,7 @@ export const Pending = ({ users: initialUsers }) => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" className="text-center p-4">
+                            <td colSpan="8" className="text-center text-white font-bold  text-xl p-3">
                                 No unapproved users found.
                             </td>
                         </tr>

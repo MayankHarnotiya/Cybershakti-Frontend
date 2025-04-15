@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { FaSpinner } from "react-icons/fa"; // Import spinner icon
 import { toast } from "react-toastify";
@@ -8,35 +8,62 @@ import { ToastContainer } from "react-toastify";
 
 
 
-export const Approved = ({ users: initialUsers }) => {
-    const [users, setUsers] = useState(initialUsers);
+export const Approved = ({approvedUsers,pendingUsers,fetchApprovedUsers}) => {
+    const [users, setUsers] = useState([]);
     const [loadingDelete, setLoadingDelete] = useState({})
- 
+    const [loading,setLoading]=useState(true)
+    const token = localStorage.getItem("authToken");
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
    
+    // const fetchApprovedUsers=async ()=>{
+    //     try {
+    //         const token=localStorage.getItem("authToken")
+    //         if(!token)
+    //         {
+    //             toast.error("Unauthorized.Please Login")
+    //             setLoading(false)
+    //             return
+    //         }
+    //         const response=await axios.get(`${BASE_URL}/admin/users/approved`,{
+    //             headers:{
+    //                 Authorization:`Bearer ${token}`,
+    //                 "Content-Type":"application/json"
+    //             }
+    //         })
+    //         console.log("approved",response)
+    //         setUsers(response.data)
+    //     } catch (error) {
+    //         toast.error("Error Fetching users")
+    //         console.log(error)
+    //     }
+    //     finally {
+    //         setLoading(false)
+    //     }
+    //    }
+    useEffect(()=>{
+        
+        fetchApprovedUsers()
+        console.log("ddd")
+     },[approvedUsers])
+ 
     const handleDelete = async (userId) => {
         if (!window.confirm("Are you sure you want to delete this user?")) return;
-        const token = localStorage.getItem("authToken");
+       
         
         setLoadingDelete((prev) => ({ ...prev, [userId]: true }));
          
         try {
             console.log("Delete",token)
             const response = await axios.delete(
-                `http://localhost:8082/admin/users/${userId}/delete`,
+                `${BASE_URL}/admin/users/${userId}/delete`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 }
             );
-
-            if (response.status === 200) {
-                toast.success(response.data || "User deleted successfully");
-
-                setUsers((prevUsers) =>
-                    prevUsers.filter((user) => user.id !== userId)
-                );
-            }
+            toast.success(response.data || "User deleted successfully");
+            fetchApprovedUsers()
         } catch (error) {
             const message = error?.response?.data || "Failed to delete user";
             toast.error(message);
@@ -50,7 +77,7 @@ export const Approved = ({ users: initialUsers }) => {
     const fetchDocument = async (userId) => {
         try {
             const response = await axios.get(
-                `http://localhost:8082/admin/user/${userId}/view`,
+                `${BASE_URL}/admin/user/${userId}/view`,
                 {
                     responseType: "blob",
                     headers: {
@@ -61,7 +88,7 @@ export const Approved = ({ users: initialUsers }) => {
 
             const contentType = response.headers["content-type"];
 
-            // 🔎 Check if it's NOT a valid PDF (likely an error blob)
+            //  Check if it's NOT a valid PDF (likely an error blob)
             if (!contentType.includes("application/pdf")) {
                 const text = await response.data.text(); // Convert Blob to string
                 toast.error(text || "Unknown error from server");
@@ -112,8 +139,8 @@ export const Approved = ({ users: initialUsers }) => {
                 </thead>
 
                 <tbody>
-                    {users.length > 0 ? (
-                        users.map((user) => (
+                    {approvedUsers.length > 0 ? (
+                        approvedUsers.map((user) => (
                             <tr key={user.id} className="text-center text-white">
                                 <td className="border p-2">{user.fullName}</td>
                                 <td className="border p-2">{user.email}</td>
@@ -136,7 +163,7 @@ export const Approved = ({ users: initialUsers }) => {
                                     <button
                                         className={`px-3 py-1 cursor-pointer flex items-center justify-center rounded w-[110px] h-[35px] ${user.approved
                                             ? "bg-red-500 text-white cursor-default"
-                                            : "bg-red-700 text-white hover:bg-red-600"
+                                            : "bg-red-600 text-white hover:bg-red-700"
                                             }`}
                                         onClick={() => handleDelete(user.id)}
                                         disabled={loadingDelete[user.id] } // Disable reject button while approving
@@ -155,8 +182,8 @@ export const Approved = ({ users: initialUsers }) => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" className="text-center p-4">
-                                No unapproved users found.
+                            <td colSpan="8" className="text-center text-white font-bold text-xl p-4">
+                                No Approved users found.
                             </td>
                         </tr>
                     )}
