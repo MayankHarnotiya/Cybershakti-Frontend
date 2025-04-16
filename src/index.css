@@ -22,6 +22,22 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #6b7280; /* Gray-500 */
   }
+
+
+  .custom-paginator {
+    background-color: #ebeaed; /* light purple background */
+    padding: 0.75rem 1rem;      /* spacing for aesthetics */
+    border-top: 1px solid #d0c8d5; /* optional: light top border */
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+  
+  /* 🌟 Active page button (circle) */
+  .custom-paginator .p-highlight {
+    background-color: #bba3d2;
+    color: rgb(13, 12, 12);
+    border-radius: 9999px;
+  }
   
 
 @import "tailwindcss"

@@ -14,7 +14,7 @@ export const Dashboard = () => {
         <div>
           <Sidebar/>
         </div>
-        <div className="p-6 space-y-2 flex-1 overflow-auto custom-scrollbar">
+        <div className=" space-y-2 flex-1 overflow-auto custom-scrollbar">
           <Outlet /> 
         </div>
       </div>

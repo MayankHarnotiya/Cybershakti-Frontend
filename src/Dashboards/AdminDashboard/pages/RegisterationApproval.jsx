@@ -15,7 +15,6 @@ export const RegisterationApproval = () => {
     const [loading, setLoading] = useState(false)
   
     const BASE_URL=import.meta.env.VITE_BASE_URL
-
     const fetchPendingUsers = async () => {
              try {
                 const token = localStorage.getItem("authToken")
