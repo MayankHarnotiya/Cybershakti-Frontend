@@ -33,7 +33,7 @@ export const TrainTable = ({ data }) => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-gray-100">
+    <div className=" w-full flex flex-col bg-gray-500">
       {/* Header */}
       <div className="w-full bg-purple-400 p-4 rounded-t-lg flex flex-col md:flex-row justify-between items-center gap-4">
         <h2 className="text-xl font-semibold text-gray-700">Training List</h2>
@@ -77,8 +77,8 @@ export const TrainTable = ({ data }) => {
       </div>
 
       {/* Table Section */}
-      <div className="flex-grow overflow-auto">
-        <table className="w-full text-left table-auto bg-purple-200">
+      <div className="flex-grow h-full overflow-auto">
+        <table className="w-full  text-left table-auto bg-purple-200">
           <thead className="bg-purple-300 sticky top-0 z-10">
             <tr>
               <th className="p-2">ID</th>
@@ -111,8 +111,8 @@ export const TrainTable = ({ data }) => {
       </div>
 
       {/* Pagination */}
-      <div className="bg-white p-4 flex justify-between items-center rounded-b-md shadow">
-        <div className="flex items-center gap-2">
+      <div className="bg-white p-4 flex justify-center items-center rounded-b-md shadow">
+        <div className="flex items-center  gap-2">
           <label>Show</label>
           <select
             value={itemsPerPage}
@@ -130,7 +130,7 @@ export const TrainTable = ({ data }) => {
           </select>
           <span>entries</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
@@ -138,7 +138,7 @@ export const TrainTable = ({ data }) => {
           >
             &lt;
           </button>
-          <span>{currentPage}</span>
+          <span className="bg-purple-200 rounded-full w-7 text-center h-6">{currentPage}</span>
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}

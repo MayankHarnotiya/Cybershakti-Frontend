@@ -81,13 +81,13 @@ export const Training = () => {
     },[])
     return (
         <>
-            <div>
-                <h1 className="text-center font-bold text-4xl mt-10">LIVE TRAINING</h1>
-                <div className="">
-                    <TrainingTable data={liveTraining}/>
-                    {/* <TrainTable data={liveTraining}/> */}
-                </div>
+           <div className=" flex flex-col bg-gray-100">
+            <h1 className="text-center font-bold text-4xl mt-10 mb-4 text-purple-800">LIVE TRAINING</h1>
+
+            <div className="flex-grow">
+                <TrainTable data={liveTraining} />
             </div>
+        </div>
         </>
     )
 }

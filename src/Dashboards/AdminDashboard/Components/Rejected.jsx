@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify"
 import { LuEye } from "react-icons/lu";
 
-export const Rejected=({fetchRejectedUsers,rejectedUsers,pendingUsers})=>{
+export const Rejected=({fetchRejectedUsers,fetchApprovedUsers,rejectedUsers})=>{
  const [users,setUsers]=useState([])
  const [loading,setLoading]=useState(true)
  const token=localStorage.getItem("authToken")
@@ -41,10 +41,7 @@ export const Rejected=({fetchRejectedUsers,rejectedUsers,pendingUsers})=>{
 //         setLoading(false)
 //     }
 // }
- useEffect(()=>{
-   
-    fetchRejectedUsers()
-    },[rejectedUsers])
+
 
  const handleReApprove = async (userId) => {
     setLoadingReApprove((prev) => ({ ...prev, [userId]: true }));
@@ -61,8 +58,9 @@ export const Rejected=({fetchRejectedUsers,rejectedUsers,pendingUsers})=>{
   
       toast.success(response.data || "User re-approved successfully");
   
+      fetch()
       fetchRejectedUsers()
-      fetchRejectedUsers()
+      fetchApprovedUsers()
     } catch (error) {
       const message = error?.response?.data || "Failed to re-approve user";
       toast.error(message);

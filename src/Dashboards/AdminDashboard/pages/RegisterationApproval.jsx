@@ -128,7 +128,11 @@ export const RegisterationApproval = () => {
             {loading ? (
                 <p className="text-white">Loading...</p>
             ) : (
-                <Approved approvedUsers={approvedUsers} pendingUsers={unApproved} fetchApprovedUsers={fetchApprovedUsers}/>
+                <Approved approvedUsers={approvedUsers} 
+                fetchPendingUsers={fetchPendingUsers}
+                fetchApprovedUsers={fetchApprovedUsers}
+                fetchRejectedUsers={fetchRejectedUsers}
+                />
             )}
         </div>
        </div>
@@ -140,7 +144,8 @@ export const RegisterationApproval = () => {
             ) : (
                 <Rejected 
                 rejectedUsers={rejectedUsers}
-                pendingUsers={unApproved}
+                fetchPendingUsers={fetchPendingUsers}
+                fetchApprovedUsers={fetchApprovedUsers}
                 fetchRejectedUsers={fetchRejectedUsers}
                 />
             )}

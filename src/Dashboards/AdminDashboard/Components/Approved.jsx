@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify";
 
 
 
-export const Approved = ({approvedUsers,pendingUsers,fetchApprovedUsers}) => {
+export const Approved = ({approvedUsers,fetchApprovedUsers}) => {
     const [users, setUsers] = useState([]);
     const [loadingDelete, setLoadingDelete] = useState({})
     const [loading,setLoading]=useState(true)
@@ -40,11 +40,7 @@ export const Approved = ({approvedUsers,pendingUsers,fetchApprovedUsers}) => {
     //         setLoading(false)
     //     }
     //    }
-    useEffect(()=>{
-        
-        fetchApprovedUsers()
-        console.log("ddd")
-     },[approvedUsers])
+    
  
     const handleDelete = async (userId) => {
         if (!window.confirm("Are you sure you want to delete this user?")) return;
