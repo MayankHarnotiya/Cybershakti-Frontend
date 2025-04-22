@@ -97,11 +97,11 @@ export const RegisterationApproval = () => {
             }
         }
         
-    // useEffect(() => {
-    //     fetchApprovedUsers()
-    //     fetchPendingUsers()
-    //     fetchRejectedUsers()
-    // }, [])
+    useEffect(() => {
+        fetchApprovedUsers()
+        fetchPendingUsers()
+        fetchRejectedUsers()
+    }, [])
 
     return (
         <>
