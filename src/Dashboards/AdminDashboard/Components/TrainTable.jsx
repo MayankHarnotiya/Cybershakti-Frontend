@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-
+import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { Dialog } from "primereact/dialog";
 import dayjs from "dayjs";
-import { Calendar } from "./Calendar";
 
 export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOrder, currentPage,
   totalPages,
@@ -22,8 +21,7 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
   const [endDate, setEndDate] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+
   const [filteredData, setFilteredData] = useState([]);
 
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -44,27 +42,6 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
     setSearchTerm(event.target.value);
     onFilterChange(event.target.value); // Update the parent component's filter state
   };
-
-
-  const handleSubmit = () => {
-    const startDateTime = startDate
-      ? `${dayjs(startDate).format("YYYY-MM-DDTHH:mm:ss")}+05:30`
-      : null;
-    const endDateTime = endDate
-      ? `${dayjs(endDate).format("YYYY-MM-DDTHH:mm:ss")}+05:30`
-      : null;
-  
-    const payload = {
-      start: startDateTime,
-      end: endDateTime,
-      // Add other fields if needed
-    };
-  
-    
-    console.log("Submitting payload", payload);
-    
-  };
-  
 
   const handleClear = () => {
     setStartDate(null);
@@ -116,6 +93,7 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
 
   return (
     <div className="w-full h-full flex flex-col bg-gray-100">
+      
       {/* Header */}
       <div className="w-full bg-purple-400 p-4 rounded-t-lg flex flex-col md:flex-row justify-between items-center gap-4">
         <h2 className="text-xl font-semibold text-gray-700">Training List</h2>
@@ -123,13 +101,23 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
 
 
           <Calendar
-            label="Start Date & Time"
-            onChange={(dateTime) => setStartDate(dateTime)}
+            value={startDate}
+            onChange={(e) => setStartDate(e.value)}
+            placeholder="Start Date & Time"
+            dateFormat="yy-mm-dd"
+            showTime
+            hourFormat="24"
+            showIcon
           />
 
           <Calendar
-            label="End Date & Time"
-            onChange={(dateTime) => setEndDate(dateTime)}
+            value={endDate}
+            onChange={(e) => setEndDate(e.value)}
+            placeholder="End Date & Time"
+            dateFormat="yy-mm-dd"
+            showTime
+            hourFormat="24"
+            showIcon
           />
 
           <Button
@@ -142,7 +130,7 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
                 endDate,
 
               });
-              console.log(startDate, endDate, searchTerm)
+              console.log('startDate:', startDate, 'EndDate:', endDate, searchTerm)
             }}
             className="p-button-sm p-button-success"
           />
@@ -255,6 +243,7 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
                   </button>
                 </td>
                 <td className="p-6">{dayjs(item.startDateTime).format("DD-MM-YYYY HH:mm")}</td>
+
                 <td className="p-6">{dayjs(item.endDateTime).format("DD-MM-YYYY HH:mm")}</td>
 
                 <td className="mt-7 flex items-center justify-center gap-3 flex-wrap">
