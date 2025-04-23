@@ -6,8 +6,18 @@ import { AddTrainingModal } from "../Components/AddTrainingModal";
 export const Training = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
+    const [upcomingPage, setUpcomingPage] = useState(0)
+    const [upcomingSortField, setUpcomingSortField] = useState('id')
+    const [upcomingSortOrder, setUpcomingSortOrder] = useState('asc')
+    const [upcomingTotalPages, setUpcomingTotalPages] = useState(0)
 
-    const [activeTab, setActiveTab] = useState("live"); // Default tab
+
+    const [pastPage, setPastPage] = useState(0);
+    const [pastSortField, setPastSortField] = useState("id");
+    const [pastSortOrder, setPastSortOrder] = useState("asc");
+    const [pastTotalPages, setPastTotalPages] = useState(0);
+
+    const [activeTab, setActiveTab] = useState("live");
 
     const [liveTraining, setLiveTraining] = useState([])
     const [upcomingTraining, setUpcomingTraining] = useState([])
@@ -78,44 +88,95 @@ export const Training = () => {
         fetchLiveTraining(); // Refresh live training data
     };
 
-    const fetchUpcomingTraining = async () => {
+    const fetchUpcomingTraining = async (
+        sortBy = upcomingSortField,
+        direction = upcomingSortOrder,
+        pageNo = upcomingPage,
+        pageSize = size,
+        search = searchTerm,
+        start = startDateTime,
+        end = endDateTime) => {
         try {
             const response = await axios.get(`${BASE_URL}/admin/training/upcoming`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
+                params: {
+                    page: pageNo,
+                    size: pageSize,
+                    sortBy: sortFieldMap[sortBy] || 0,
+                    direction: direction.toUpperCase(),
+                    searchTerm: search,
+                    startDateTime: start,
+                    endDateTime: end
+                }
             });
             setUpcomingTraining(response.data);
+            setUpcomingPage(response.data.pageable.pageNumber);
+            setUpcomingTotalPages(response.data.totalPages);
         } catch (error) {
             console.error("Error Fetching Upcoming Training Data:", error?.response?.data || error.message);
         }
     };
 
-    const fetchPastTraining = async () => {
+    const fetchPastTraining = async (
+        sortBy = pastSortField,
+        direction = pastSortOrder,
+        pageNo = pastPage,
+        pageSize = size,
+        search = searchTerm,
+        start = startDateTime,
+        end = endDateTime
+    ) => {
         try {
             const response = await axios.get(`${BASE_URL}/admin/training/past`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
+                params:{
+                    page: pageNo,
+                    size: pageSize,
+                    sortBy: sortFieldMap[sortBy] || 0,
+                    direction: direction.toUpperCase(),
+                    searchTerm: search,
+                    startDateTime: start,
+                    endDateTime: end
+                }
             });
+
             setPastTraining(response.data);
+            setPastPage(response.data.pageable.pageNumber);
+            setPastTotalPages(response.data.totalPages);
         } catch (error) {
             console.error("Error Fetching Past Training Data:", error?.response?.data || error.message);
         }
     };
 
     useEffect(() => {
-        fetchLiveTraining();
-        fetchUpcomingTraining();
-        fetchPastTraining();
-    }, []);
+        if (activeTab === "live") fetchLiveTraining();
+        if (activeTab === "upcoming") fetchUpcomingTraining();
+        if (activeTab === "past") fetchPastTraining();
+    }, [activeTab]);
+    
 
     const handleSortChange = (field, order) => {
         setSortField(field);
         setSortOrder(order);
         fetchLiveTraining(field, order);
+    };
+
+    const handleUpcomingSortChange = (field, order) => {
+        setUpcomingSortField(field);
+        setUpcomingSortOrder(order);
+        fetchUpcomingTraining(field, order);
+    };
+    
+    const handlePastSortChange = (field, order) => {
+        setPastSortField(field);
+        setPastSortOrder(order);
+        fetchPastTraining(field, order);
     };
 
     const handleFilterChange = ({ searchTerm, startDate, endDate }) => {
@@ -131,6 +192,32 @@ export const Training = () => {
         setPage(0);
     };
 
+    const handleUpcomingFilterChange = ({ searchTerm, startDate, endDate }) => {
+        const updatedSearch = searchTerm?.trim() || "";
+        const updatedStart = startDate ? new Date(startDate).toISOString() : "";
+        const updatedEnd = endDate ? new Date(endDate).toISOString() : "";
+    
+        setUpcomingSearchTerm(updatedSearch);
+        setUpcomingStartDateTime(updatedStart);
+        setUpcomingEndDateTime(updatedEnd);
+    
+        fetchUpcomingTraining(upcomingSortField, upcomingSortOrder, 0, size, updatedSearch, updatedStart, updatedEnd);
+        setUpcomingPage(0);
+    };
+    
+    const handlePastFilterChange = ({ searchTerm, startDate, endDate }) => {
+        const updatedSearch = searchTerm?.trim() || "";
+        const updatedStart = startDate ? new Date(startDate).toISOString() : "";
+        const updatedEnd = endDate ? new Date(endDate).toISOString() : "";
+    
+        setPastSearchTerm(updatedSearch);
+        setPastStartDateTime(updatedStart);
+        setPastEndDateTime(updatedEnd);
+    
+        fetchPastTraining(pastSortField, pastSortOrder, 0, size, updatedSearch, updatedStart, updatedEnd);
+        setPastPage(0);
+    };
+
     const tabStyle = (tabName) =>
         `px-6 py-2 font-semibold cursor-pointer transition-all ${activeTab === tabName
             ? "bg-purple-800 text-white border-b-4 border-yellow-400"
@@ -140,7 +227,13 @@ export const Training = () => {
     return (
         <div className="flex flex-col bg-gray-100 min-h-screen">
             <div className="flex items-center justify-center ">
-                <button onClick={handleOpenModal} className="text-center  font-bold text-4xl mt-10 mb-4 text-purple-800 ">+ADD TRAINING</button>
+                <button
+                    onClick={handleOpenModal}
+                    className="mt-10 mb-6 px-6 py-3 cursor-pointer bg-purple-700 hover:bg-purple-800 text-white text-xl font-semibold rounded-full shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-purple-300"
+                >
+                    + Add Training
+                </button>
+
             </div>
             {/* Tabs */}
             {/* Bubble Tabs - Top Left of Table */}
@@ -155,6 +248,7 @@ export const Training = () => {
                     >
                         LIVE TRAININGS
                     </button>
+
                     <button
                         onClick={() => setActiveTab("upcoming")}
                         className={`flex-1 py-2 px-4 text-center font-bold rounded-full cursor-pointer transition-all duration-300 ${activeTab === "upcoming"
@@ -162,6 +256,7 @@ export const Training = () => {
                             : "text-purple-700 hover:bg-purple-300"
                             }`}
                     >
+
                         UPCOMING TRAININGS
                     </button>
                     <button
@@ -203,11 +298,46 @@ export const Training = () => {
                 )}
 
                 {activeTab === "upcoming" && (
-                    <TrainTable data={upcomingTraining} />
+                    <TrainTable data={upcomingTraining}
+                    onSortChange={handleUpcomingSortChange}
+                    currentSortField={upcomingSortField}
+                    currentSortOrder={upcomingSortOrder}
+                    currentPage={upcomingPage}
+                    totalPages={upcomingTotalPages}
+                    itemsPerPage={size}
+                    onPageChange={(newPage) => {
+                        setUpcomingPage(newPage);
+                        fetchUpcomingTraining(upcomingSortField, upcomingSortOrder, newPage, size);
+                    }}
+                    onItemsPerPageChange={(newSize) => {
+                        setSize(newSize);
+                        setUpcomingPage(0);
+                        fetchUpcomingTraining(upcomingSortField, upcomingSortOrder, 0, newSize);
+                    }}
+                    setCurrentPage={setUpcomingPage}
+                    onFilterChange={handleUpcomingFilterChange}
+                    />
+                    
                 )}
 
                 {activeTab === "past" && (
-                    <TrainTable data={pastTraining} />
+                    <TrainTable data={pastTraining}
+                    onSortChange={handlePastSortChange}
+                    currentSortField={pastSortField}
+                    currentSortOrder={pastSortOrder}
+                    currentPage={pastPage}
+                    totalPages={pastTotalPages}
+                    itemsPerPage={size}
+                    onPageChange={(newPage) => {
+                        setPastPage(newPage);
+                        fetchPastTraining(pastSortField, pastSortOrder, newPage, size);
+                    }}
+                    onItemsPerPageChange={(newSize) => {
+                        setSize(newSize);
+                        setPastPage(0);
+                        fetchPastTraining(pastSortField, pastSortOrder, 0, newSize);
+                    }}
+                    />
                 )}
             </div>
             {isModalOpen && (
@@ -216,10 +346,11 @@ export const Training = () => {
                     onClick={handleCloseModal}
                 >
                     <div
-                        className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-3xl mx-4"
+                        className="bg-white rounded-3xl shadow-2xl px-12 py-10 w-full max-w-5xl mx-4 overflow-hidden max-h-[90vh]"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h2 className="text-2xl font-bold text-purple-800 mb-6 text-center">Add New Training</h2>
+
+                        <h2 className="text-3xl font-bold text-purple-800 mb-6 text-center">Add New Training</h2>
                         <AddTrainingModal
                             onClose={handleCloseModal}
                             onSuccess={handleTrainingAdded}
