@@ -83,23 +83,28 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
         }
     }, [formData.startDate, formData.startTime]);
 
-    const InputWrapper = ({ label, icon, children }) => (
-        <div>
-            <label className=" font-semibold text-xl text-gray-700  flex items-center gap-2 mb-1">
-                {icon}
-                {label}
-            </label>
-            {children}
-        </div>
-    );
+    // const InputWrapper = ({ label, icon, children }) => (
+    //     <div>
+    //         <label className=" font-semibold text-xl text-gray-700  flex items-center gap-2 mb-1">
+    //             {icon}
+    //             {label}
+    //         </label>
+    //         {children}
+    //     </div>
+    // );
 
     return (
         <>
             <ToastContainer position="top-right" autoClose={3000} />
             <form onSubmit={handleSubmit} className="space-y-8 p-8 bg-white rounded-2xl shadow-md overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <InputWrapper  label="Training Name" icon={<FiEdit3 size={20}/>}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div className="flex flex-row gap-2 text-xl font-semibold text-gray-600">
+                            <FiEdit3 size={20} />
+                            <h1>Training Name</h1>
+                        </div>
                         <input
+                            label="Training Name"
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -107,9 +112,14 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
                             placeholder="Enter training name"
                             required
                         />
-                    </InputWrapper>
-                    <InputWrapper label="Training Type" icon={<FiType size={20} />}>
+                    </div>
+                    <div >
+                        <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
+                            <FiType size={20} />
+                            <h1>Training Type</h1>
+                        </div>
                         <select
+                            label="Training Type"
                             value={formData.trainingType}
                             onChange={(e) => setFormData({ ...formData, trainingType: e.target.value })}
                             className="w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:ring-purple-600 focus:border-purple-600"
@@ -119,9 +129,14 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
                             <option value="Virtual">Virtual</option>
                             <option value="Offline">Offline</option>
                         </select>
-                    </InputWrapper>
-                    <InputWrapper label="Description" icon={<FiFileText size={20}/>}>
+                    </div>
+                    <div>
+                        <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
+                            <FiFileText size={20} />
+                            <h1>Description</h1>
+                        </div>
                         <textarea
+                            label="Description"
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             className="w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:ring-purple-600 focus:border-purple-600"
@@ -129,9 +144,16 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
                             placeholder="Describe the training"
                             required
                         />
-                    </InputWrapper>
-                    <InputWrapper label="Syllabus" icon={<FiList size={20}/>}>
+                    </div>
+
+
+                    <div >
+                        <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
+                            <h1>Syllabus</h1>
+                            <FiList size={20} />
+                        </div>
                         <textarea
+                            label="Syllabus"
                             value={formData.syllabus}
                             onChange={(e) => setFormData({ ...formData, syllabus: e.target.value })}
                             className="w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:ring-purple-600 focus:border-purple-600"
@@ -139,27 +161,45 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
                             placeholder="List syllabus details"
                             required
                         />
-                    </InputWrapper>
-                    <InputWrapper label="Start Date" icon={<FiCalendar size={20}/>}>
+                    </div>
+
+                    <div>
+                        <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
+                        <h1>Start Date</h1>
+                        <FiCalendar size={20} />
+                        </div>
                         <input
+                            label="Start Date"
                             type="date"
                             value={formData.startDate}
                             onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
                             className="w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:ring-purple-600 focus:border-purple-600"
                             required
                         />
-                    </InputWrapper>
-                    <InputWrapper label="Start Time" icon={<FiClock size={20}/>}>
+                    </div>
+
+                    <div>
+                        <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
+                        <h1>Start Time</h1>
+                        <FiClock size={20} />
+                        </div>
                         <input
+                            label="Start Time"
                             type="time"
                             value={formData.startTime}
                             onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
                             className="w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:ring-purple-600 focus:border-purple-600"
                             required
                         />
-                    </InputWrapper>
-                    <InputWrapper label="End Date" icon={<FiCalendar size={20}/>}>
+                    </div>
+
+                    <div>
+                       <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
+                       <h1>End Date</h1>
+                       <FiCalendar size={20} />
+                       </div>
                         <input
+                            label="End Date"
                             type="date"
                             value={formData.endDate}
                             onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
@@ -167,9 +207,15 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
                             className="w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:ring-purple-600 focus:border-purple-600"
                             required
                         />
-                    </InputWrapper>
-                    <InputWrapper label="End Time" icon={<FiClock size={20}/>}>
+                    </div>
+
+                    <div>
+                        <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
+                        <h1>End Time</h1>
+                        <FiClock size={20} />
+                        </div>
                         <input
+                            label="End Time"
                             type="time"
                             value={formData.endTime}
                             onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
@@ -177,7 +223,7 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
                             className="w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:ring-purple-600 focus:border-purple-600"
                             required
                         />
-                    </InputWrapper>
+                    </div>
                 </div>
 
                 <div className="flex justify-end gap-4 pt-6">
