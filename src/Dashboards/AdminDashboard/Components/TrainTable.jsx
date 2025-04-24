@@ -13,7 +13,12 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
   onPageChange,
   setCurrentPage,
   onItemsPerPageChange,
-  onFilterChange }) => {
+  onFilterChange,
+  onEditTraining
+}) => {
+
+
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
 
 
@@ -42,6 +47,10 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
     setSearchTerm(event.target.value);
     onFilterChange(event.target.value); // Update the parent component's filter state
   };
+
+
+  const handleUpdateOpenModal = () => setIsUpdateModalOpen(true);
+  const handleUpdateCloseModal = () => setIsUpdateModalOpen(false);
 
   const handleClear = () => {
     setStartDate(null);
@@ -90,10 +99,20 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
     );
   };
 
+  const getTrainingStatus = (item) => {
+    const now = new Date();
+    const start = new Date(item.startDateTime);
+    const end = new Date(item.endDateTime);
+
+    if (now < start) return "upcoming";
+    if (now >= start && now <= end) return "live";
+    return "past";
+  };
+
 
   return (
     <div className="w-full h-full flex flex-col bg-gray-100">
-      
+
       {/* Header */}
       <div className="w-full bg-purple-400 p-4 rounded-t-lg flex flex-col md:flex-row justify-between items-center gap-4">
         <h2 className="text-xl font-semibold text-gray-700">Training List</h2>
@@ -247,14 +266,17 @@ export const TrainTable = ({ data, onSortChange, currentSortField, currentSortOr
                 <td className="p-6">{dayjs(item.endDateTime).format("DD-MM-YYYY HH:mm")}</td>
 
                 <td className="mt-7 flex items-center justify-center gap-3 flex-wrap">
-                  <div className="relative group flex flex-col items-center">
-                    <button className="bg-orange-500 cursor-pointer text-white px-2 py-1 rounded transition duration-200 hover:bg-orange-600">
-                      <i className="pi pi-pencil"></i>
-                    </button>
-                    <span className="absolute bottom-[-1.8rem] w-max text-xs text-white bg-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition duration-200 whitespace-nowrap z-10">
-                      Update
-                    </span>
-                  </div>
+                  {getTrainingStatus(item) === "upcoming" && (
+                    <div className="relative group flex flex-col items-center">
+                      <button onClick={() => onEditTraining(item)} className="bg-orange-500 cursor-pointer text-white px-2 py-1 rounded transition duration-200 hover:bg-orange-600">
+                        <i className="pi pi-pencil"></i>
+                      </button>
+                      <span className="absolute bottom-[-1.8rem] w-max text-xs text-white bg-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition duration-200 whitespace-nowrap z-10">
+                        Update
+                      </span>
+                    </div>
+                  )}
+
                   <div className="relative group flex flex-col items-center">
                     <button className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded transition duration-200 hover:bg-blue-600">
                       <i className="pi pi-copy"></i>

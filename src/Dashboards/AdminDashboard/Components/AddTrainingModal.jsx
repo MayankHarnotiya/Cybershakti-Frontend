@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FiCalendar, FiClock, FiEdit3, FiFileText, FiList, FiType } from "react-icons/fi";
 
-export const AddTrainingModal = ({ onClose, onSuccess }) => {
+export const AddTrainingModal = ({ onClose, onSuccess, initialData = null, mode = 'add' }) => {
     const [formData, setFormData] = useState({
         name: "",
         trainingType: "",
@@ -16,9 +16,28 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
         endTime: ""
     });
 
+
     const [minEndDateTime, setMinEndDateTime] = useState("");
     const token = localStorage.getItem("authToken");
     const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+    useEffect(() => {
+        if (initialData) {
+            const start = new Date(initialData.startDateTime);
+            const end = new Date(initialData.endDateTime);
+
+            setFormData({
+                name: initialData.name || "",
+                trainingType: initialData.trainingType || "",
+                description: initialData.description || "",
+                syllabus: initialData.syllabus || "",
+                startDate: start.toISOString().slice(0, 10),
+                startTime: start.toTimeString().slice(0, 5),
+                endDate: end.toISOString().slice(0, 10),
+                endTime: end.toTimeString().slice(0, 5),
+            });
+        }
+    }, [initialData]);
 
     const validateForm = () => {
         const { name, trainingType, description, syllabus, startDate, startTime, endDate, endTime } = formData;
@@ -37,8 +56,8 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
         const currentDate = new Date();
         currentDate.setSeconds(0, 0);
 
-        if (endDateTime <= startDateTime) errorList.push("End date/time must be after the start date/time.");
-        if (startDateTime < currentDate) errorList.push("Start date/time cannot be in the past.");
+        // if (endDateTime <= startDateTime) errorList.push("End date/time must be after the start date/time.");
+        // if (startDateTime < currentDate) errorList.push("Start date/time cannot be in the past.");
 
         if (errorList.length > 0) {
             errorList.forEach(error => toast.error(error));
@@ -62,18 +81,31 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
         };
 
         try {
-            const response = await axios.post(`${BASE_URL}/admin/add/training`, payload, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            toast.success("Training added successfully!");
+            let response;
+            if (mode === "edit") {
+                response = await axios.put(`${BASE_URL}/admin/training/${initialData.id}/update`, payload, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                console.log('updated Training Data:',response.data)
+                toast.success("Training updated successfully!");
+            } else {
+                response = await axios.post(`${BASE_URL}/admin/add/training`, payload, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                console.log('Add training Data:',response.data)
+                toast.success("Training added successfully!");
+            }
+
             onSuccess(response.data);
             onClose();
         } catch (error) {
-            toast.error(error.response?.data || "Error adding training.");
-        }
+            toast.error(error.response?.data || `Error ${mode === "edit" ? "updating" : "adding"} training.`);        }
     };
 
     useEffect(() => {
@@ -165,8 +197,8 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
 
                     <div>
                         <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
-                        <h1>Start Date</h1>
-                        <FiCalendar size={20} />
+                            <h1>Start Date</h1>
+                            <FiCalendar size={20} />
                         </div>
                         <input
                             label="Start Date"
@@ -180,8 +212,8 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
 
                     <div>
                         <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
-                        <h1>Start Time</h1>
-                        <FiClock size={20} />
+                            <h1>Start Time</h1>
+                            <FiClock size={20} />
                         </div>
                         <input
                             label="Start Time"
@@ -194,10 +226,10 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
                     </div>
 
                     <div>
-                       <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
-                       <h1>End Date</h1>
-                       <FiCalendar size={20} />
-                       </div>
+                        <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
+                            <h1>End Date</h1>
+                            <FiCalendar size={20} />
+                        </div>
                         <input
                             label="End Date"
                             type="date"
@@ -211,8 +243,8 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
 
                     <div>
                         <div className="flex flex-row text-xl font-semibold text-gray-600 gap-2">
-                        <h1>End Time</h1>
-                        <FiClock size={20} />
+                            <h1>End Time</h1>
+                            <FiClock size={20} />
                         </div>
                         <input
                             label="End Time"
@@ -238,7 +270,7 @@ export const AddTrainingModal = ({ onClose, onSuccess }) => {
                         type="submit"
                         className="px-8 py-3 text-base font-medium text-white bg-purple-700 rounded-lg shadow-md hover:bg-purple-800"
                     >
-                        Add Training
+                         {mode === "edit" ? "Update Training" : "Add Training"}
                     </button>
                 </div>
             </form>

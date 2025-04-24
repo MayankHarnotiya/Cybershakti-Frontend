@@ -4,6 +4,10 @@ import axios from "axios"
 import { AddTrainingModal } from "../Components/AddTrainingModal";
 
 export const Training = () => {
+
+    const [modalMode, setModalMode] = useState("add"); 
+    const [trainingToEdit, setTrainingToEdit] = useState(null);
+
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     const [upcomingPage, setUpcomingPage] = useState(0)
@@ -80,8 +84,23 @@ export const Training = () => {
         }
     };
 
-    const handleOpenModal = () => setIsModalOpen(true);
-    const handleCloseModal = () => setIsModalOpen(false);
+    const handleOpenAddModal = () => {
+        setModalMode("add");
+        setTrainingToEdit(null);
+        setIsModalOpen(true);
+    };
+
+    const handleOpenEditModal = (training) => {
+        setModalMode("edit");
+        setTrainingToEdit(training);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setTrainingToEdit(null);
+    };
+
 
     const handleTrainingAdded = () => {
         handleCloseModal();
@@ -135,7 +154,7 @@ export const Training = () => {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
-                params:{
+                params: {
                     page: pageNo,
                     size: pageSize,
                     sortBy: sortFieldMap[sortBy] || 0,
@@ -159,7 +178,7 @@ export const Training = () => {
         if (activeTab === "upcoming") fetchUpcomingTraining();
         if (activeTab === "past") fetchPastTraining();
     }, [activeTab]);
-    
+
 
     const handleSortChange = (field, order) => {
         setSortField(field);
@@ -172,7 +191,7 @@ export const Training = () => {
         setUpcomingSortOrder(order);
         fetchUpcomingTraining(field, order);
     };
-    
+
     const handlePastSortChange = (field, order) => {
         setPastSortField(field);
         setPastSortOrder(order);
@@ -196,24 +215,24 @@ export const Training = () => {
         const updatedSearch = searchTerm?.trim() || "";
         const updatedStart = startDate ? new Date(startDate).toISOString() : "";
         const updatedEnd = endDate ? new Date(endDate).toISOString() : "";
-    
-        setUpcomingSearchTerm(updatedSearch);
-        setUpcomingStartDateTime(updatedStart);
-        setUpcomingEndDateTime(updatedEnd);
-    
+
+        setSearchTerm(updatedSearch);
+        setStartDateTime(updatedStart);
+        setEndDateTime(updatedEnd);
+
         fetchUpcomingTraining(upcomingSortField, upcomingSortOrder, 0, size, updatedSearch, updatedStart, updatedEnd);
         setUpcomingPage(0);
     };
-    
+
     const handlePastFilterChange = ({ searchTerm, startDate, endDate }) => {
         const updatedSearch = searchTerm?.trim() || "";
         const updatedStart = startDate ? new Date(startDate).toISOString() : "";
         const updatedEnd = endDate ? new Date(endDate).toISOString() : "";
-    
-        setPastSearchTerm(updatedSearch);
-        setPastStartDateTime(updatedStart);
-        setPastEndDateTime(updatedEnd);
-    
+
+        setSearchTerm(updatedSearch);
+        setStartDateTime(updatedStart);
+        setEndDateTime(updatedEnd);
+
         fetchPastTraining(pastSortField, pastSortOrder, 0, size, updatedSearch, updatedStart, updatedEnd);
         setPastPage(0);
     };
@@ -228,7 +247,7 @@ export const Training = () => {
         <div className="flex flex-col bg-gray-100 min-h-screen">
             <div className="flex items-center justify-center ">
                 <button
-                    onClick={handleOpenModal}
+                    onClick={handleOpenAddModal}
                     className="mt-10 mb-6 px-6 py-3 cursor-pointer bg-purple-700 hover:bg-purple-800 text-white text-xl font-semibold rounded-full shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-purple-300"
                 >
                     + Add Training
@@ -283,6 +302,7 @@ export const Training = () => {
                         currentPage={page}
                         totalPages={totalPages}
                         itemsPerPage={size}
+                        onEditTraining={handleOpenEditModal}
                         onPageChange={(newPage) => {
                             setPage(newPage);
                             fetchLiveTraining(sortField, sortOrder, newPage, size);
@@ -299,44 +319,48 @@ export const Training = () => {
 
                 {activeTab === "upcoming" && (
                     <TrainTable data={upcomingTraining}
-                    onSortChange={handleUpcomingSortChange}
-                    currentSortField={upcomingSortField}
-                    currentSortOrder={upcomingSortOrder}
-                    currentPage={upcomingPage}
-                    totalPages={upcomingTotalPages}
-                    itemsPerPage={size}
-                    onPageChange={(newPage) => {
-                        setUpcomingPage(newPage);
-                        fetchUpcomingTraining(upcomingSortField, upcomingSortOrder, newPage, size);
-                    }}
-                    onItemsPerPageChange={(newSize) => {
-                        setSize(newSize);
-                        setUpcomingPage(0);
-                        fetchUpcomingTraining(upcomingSortField, upcomingSortOrder, 0, newSize);
-                    }}
-                    setCurrentPage={setUpcomingPage}
-                    onFilterChange={handleUpcomingFilterChange}
+                        onSortChange={handleUpcomingSortChange}
+                        currentSortField={upcomingSortField}
+                        currentSortOrder={upcomingSortOrder}
+                        currentPage={upcomingPage}
+                        totalPages={upcomingTotalPages}
+                        onEditTraining={handleOpenEditModal}
+                        itemsPerPage={size}
+                        onPageChange={(newPage) => {
+                            setUpcomingPage(newPage);
+                            fetchUpcomingTraining(upcomingSortField, upcomingSortOrder, newPage, size);
+                        }}
+                        onItemsPerPageChange={(newSize) => {
+                            setSize(newSize);
+                            setUpcomingPage(0);
+                            fetchUpcomingTraining(upcomingSortField, upcomingSortOrder, 0, newSize);
+                        }}
+                        setCurrentPage={setUpcomingPage}
+                        onFilterChange={handleUpcomingFilterChange}
                     />
-                    
+
                 )}
 
                 {activeTab === "past" && (
                     <TrainTable data={pastTraining}
-                    onSortChange={handlePastSortChange}
-                    currentSortField={pastSortField}
-                    currentSortOrder={pastSortOrder}
-                    currentPage={pastPage}
-                    totalPages={pastTotalPages}
-                    itemsPerPage={size}
-                    onPageChange={(newPage) => {
-                        setPastPage(newPage);
-                        fetchPastTraining(pastSortField, pastSortOrder, newPage, size);
-                    }}
-                    onItemsPerPageChange={(newSize) => {
-                        setSize(newSize);
-                        setPastPage(0);
-                        fetchPastTraining(pastSortField, pastSortOrder, 0, newSize);
-                    }}
+                        onSortChange={handlePastSortChange}
+                        currentSortField={pastSortField}
+                        currentSortOrder={pastSortOrder}
+                        currentPage={pastPage}
+                        totalPages={pastTotalPages}
+                        onEditTraining={handleOpenEditModal}
+                        itemsPerPage={size}
+                        onPageChange={(newPage) => {
+                            setPastPage(newPage);
+                            fetchPastTraining(pastSortField, pastSortOrder, newPage, size);
+                        }}
+                        onItemsPerPageChange={(newSize) => {
+                            setSize(newSize);
+                            setPastPage(0);
+                            fetchPastTraining(pastSortField, pastSortOrder, 0, newSize);
+                        }}
+                        setCurrentPage={setPastPage}
+                        onFilterChange={handlePastFilterChange}
                     />
                 )}
             </div>
@@ -349,16 +373,24 @@ export const Training = () => {
                         className="bg-white rounded-3xl shadow-2xl px-12 py-10 w-full max-w-5xl mx-4 overflow-hidden max-h-[90vh]"
                         onClick={(e) => e.stopPropagation()}
                     >
-
-                        <h2 className="text-3xl font-bold text-purple-800 mb-6 text-center">Add New Training</h2>
+                        <h2 className="text-3xl font-bold text-purple-800 mb-6 text-center">
+                            {modalMode === 'edit' ? 'Update Training' : 'Add New Training'}
+                        </h2>
                         <AddTrainingModal
+                            mode={modalMode}
+                            initialData={trainingToEdit}
                             onClose={handleCloseModal}
-                            onSuccess={handleTrainingAdded}
+                            onSuccess={() => {
+                                handleCloseModal();
+                                if (activeTab === "live") fetchLiveTraining();
+                                if (activeTab === "upcoming") fetchUpcomingTraining();
+                                if (activeTab === "past") fetchPastTraining();
+                              }}
+                              
                         />
                     </div>
                 </div>
             )}
-
 
         </div>
     );
