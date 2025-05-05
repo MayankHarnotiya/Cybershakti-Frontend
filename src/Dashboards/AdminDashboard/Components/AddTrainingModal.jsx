@@ -89,23 +89,34 @@ export const AddTrainingModal = ({ onClose, onSuccess, initialData = null, mode 
                         "Content-Type": "application/json",
                     },
                 });
-                console.log('updated Training Data:',response.data)
+                console.log('updated Training Data:', response.data)
                 toast.success("Training updated successfully!");
-            } else {
+            }
+            else if (mode === "clone") {
+                response = await axios.post(`${BASE_URL}/admin/training/${initialData.id}/clone`, payload, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                toast.success("Training cloned successfully!");
+            }
+            else {
                 response = await axios.post(`${BASE_URL}/admin/add/training`, payload, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 });
-                console.log('Add training Data:',response.data)
+                console.log('Add training Data:', response.data)
                 toast.success("Training added successfully!");
             }
 
             onSuccess(response.data);
             onClose();
         } catch (error) {
-            toast.error(error.response?.data || `Error ${mode === "edit" ? "updating" : "adding"} training.`);        }
+            toast.error(error.response?.data || `Error ${mode === "edit" ? "updating" : "adding"} training.`);
+        }
     };
 
     useEffect(() => {
@@ -205,6 +216,7 @@ export const AddTrainingModal = ({ onClose, onSuccess, initialData = null, mode 
                             type="date"
                             value={formData.startDate}
                             onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                            min={new Date().toISOString().split('T')[0]}
                             className="w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:ring-purple-600 focus:border-purple-600"
                             required
                         />
@@ -270,7 +282,7 @@ export const AddTrainingModal = ({ onClose, onSuccess, initialData = null, mode 
                         type="submit"
                         className="px-8 py-3 text-base font-medium text-white bg-purple-700 rounded-lg shadow-md hover:bg-purple-800"
                     >
-                         {mode === "edit" ? "Update Training" : "Add Training"}
+                        {mode === "edit" ? "Update Training" : mode === "clone" ? "Clone Training" : "Add Training"}
                     </button>
                 </div>
             </form>

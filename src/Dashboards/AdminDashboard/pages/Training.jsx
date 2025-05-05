@@ -5,7 +5,7 @@ import { AddTrainingModal } from "../Components/AddTrainingModal";
 
 export const Training = () => {
 
-    const [modalMode, setModalMode] = useState("add"); 
+    const [modalMode, setModalMode] = useState("add");
     const [trainingToEdit, setTrainingToEdit] = useState(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -90,6 +90,12 @@ export const Training = () => {
         setIsModalOpen(true);
     };
 
+    const handleOpenCloneModal = (training) => {
+        setModalMode("clone");
+        setTrainingToEdit(training);
+        setIsModalOpen(true);
+    };
+    
     const handleOpenEditModal = (training) => {
         setModalMode("edit");
         setTrainingToEdit(training);
@@ -297,6 +303,8 @@ export const Training = () => {
                     <TrainTable
                         data={liveTraining}
                         onSortChange={handleSortChange}
+                        onCloneTraining={handleOpenCloneModal}
+
                         currentSortField={sortField}
                         currentSortOrder={sortOrder}
                         currentPage={page}
@@ -320,6 +328,8 @@ export const Training = () => {
                 {activeTab === "upcoming" && (
                     <TrainTable data={upcomingTraining}
                         onSortChange={handleUpcomingSortChange}
+                        onCloneTraining={handleOpenCloneModal}
+
                         currentSortField={upcomingSortField}
                         currentSortOrder={upcomingSortOrder}
                         currentPage={upcomingPage}
@@ -344,6 +354,8 @@ export const Training = () => {
                 {activeTab === "past" && (
                     <TrainTable data={pastTraining}
                         onSortChange={handlePastSortChange}
+                        onCloneTraining={handleOpenCloneModal}
+
                         currentSortField={pastSortField}
                         currentSortOrder={pastSortOrder}
                         currentPage={pastPage}
@@ -374,8 +386,11 @@ export const Training = () => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h2 className="text-3xl font-bold text-purple-800 mb-6 text-center">
-                            {modalMode === 'edit' ? 'Update Training' : 'Add New Training'}
+                            {modalMode === 'edit' && 'Update Training'}
+                            {modalMode === 'add' && 'Add New Training'}
+                            {modalMode === 'clone' && 'Clone Training'}
                         </h2>
+
                         <AddTrainingModal
                             mode={modalMode}
                             initialData={trainingToEdit}
@@ -385,8 +400,8 @@ export const Training = () => {
                                 if (activeTab === "live") fetchLiveTraining();
                                 if (activeTab === "upcoming") fetchUpcomingTraining();
                                 if (activeTab === "past") fetchPastTraining();
-                              }}
-                              
+                            }}
+
                         />
                     </div>
                 </div>
