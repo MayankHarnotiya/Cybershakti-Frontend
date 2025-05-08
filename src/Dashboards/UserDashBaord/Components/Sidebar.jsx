@@ -12,13 +12,10 @@ export const Sidebar = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: "/admin", icon: <IoIosHome size={25} />, label: "Home" },
-    { path: "/admin/approval", icon: <GiArchiveRegister size={25} />, label: "Registration Approval" },
-    { path: "/admin/add-training", icon: <MdOutlinePostAdd size={25} />, label: "Add Training" },
-    { path: "/admin/view-training", icon: <FaStreetView size={25} />, label: "View Training Status" },
-    { path: "/admin/report", icon: <GrScorecard size={25} />, label: "Report" },
-    { path: "/admin/attendance", icon: <FaPeopleGroup size={25}/>, label: "Attendance" },
-    { path: "/admin/certification", icon: <GrCertificate size={25} />, label: "Certification" },
+    { path: "/user", icon: <IoIosHome size={25} />, label: "Dashboard" },
+    { path: "/user/approval", icon: <GiArchiveRegister size={25} />, label: "Training Details" },
+    { path: "/user/add-training", icon: <MdOutlinePostAdd size={25} />, label: "Profile" },
+    { path: "/user/view-training", icon: <FaStreetView size={25} />, label: "Certificates" },
   ];
 
   return (

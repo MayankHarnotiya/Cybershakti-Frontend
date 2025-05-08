@@ -9,10 +9,12 @@ import { Home } from "./pages/Home";
 import { Calendar } from "./pages/Calendar";
 import { ProtectedRoute } from "./Components/ProtectedRoute";
 import { Dashboard } from "./Dashboards/AdminDashboard/Components/Dashboard";
-import { UserDashboard } from "./Dashboards/UserDashBaord/UserDashboard";
 import { RegisterationApproval } from "./Dashboards/AdminDashboard/pages/RegisterationApproval";
 import { AdminHome } from "./Dashboards/AdminDashboard/pages/AdminHome";
 import { Training } from "./Dashboards/AdminDashboard/pages/Training";
+import { UserDashboard } from "./Dashboards/UserDashBaord/Components/UserDashboard";
+import { UserHome } from "./Dashboards/UserDashBaord/pages/UserHome";
+import { Attendance } from "./Dashboards/AdminDashboard/pages/Attendance";
 
 function App() {
   const router = createBrowserRouter(
@@ -26,14 +28,18 @@ function App() {
           <Route path="/admin" element={<Dashboard />}>
             <Route index element={<AdminHome />} /> {/* Default Admin Home */}
             <Route path="approval" element={<RegisterationApproval />} /> {/* Corrected path */}
-            <Route path="add-training" element={<Training/>}/>
+            <Route path="add-training" element={<Training />} />
+            <Route path="attendance" element={<Attendance/>}/>
           </Route>
         </Route>
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute allowedRoles={["ROLE_USER"]} />}>
-          <Route path="/user" element={<UserDashboard />} />
+          <Route path="/user" element={<UserDashboard />}>
+            <Route index element={<UserHome />} /> 
+          </Route>
         </Route>
+
 
         {/* Public Routes */}
         <Route path="/" element={<Layout />}>

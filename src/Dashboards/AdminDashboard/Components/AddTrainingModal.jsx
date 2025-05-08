@@ -17,6 +17,7 @@ export const AddTrainingModal = ({ onClose, onSuccess, initialData = null, mode 
     });
 
 
+    
     const [minEndDateTime, setMinEndDateTime] = useState("");
     const token = localStorage.getItem("authToken");
     const BASE_URL = import.meta.env.VITE_BASE_URL;

@@ -9,16 +9,12 @@ export const Layout = () => {
     const isAuthPage = location.pathname === "/signup" || location.pathname === "/login";
 
     return (
-        <div className="flex flex-col min-h-screen">
-            {/* Show normal Navbar unless on auth pages */}
+        <div className="flex flex-col min-h-screen w-full bg-amber-50">
             {!isAuthPage && <Navbar />}
 
-            {/* Outlet for rendering child routes */}
-            <main className="flex-grow p-5">
+            <main className="flex-grow w-full">
                 <Outlet />
             </main>
-
-            {/* Footer remains the same */}
             <Footer />
         </div>
     );

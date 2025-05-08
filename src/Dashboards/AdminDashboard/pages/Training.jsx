@@ -145,6 +145,7 @@ export const Training = () => {
         }
     };
 
+    
     const fetchPastTraining = async (
         sortBy = pastSortField,
         direction = pastSortOrder,

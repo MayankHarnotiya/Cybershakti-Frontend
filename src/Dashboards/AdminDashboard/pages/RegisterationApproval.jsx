@@ -109,7 +109,7 @@ export const RegisterationApproval = () => {
 
        <div className="">
        <h2 className="text-4xl font-bold mb-4 text-center">Pending Approvals</h2>
-        <div className="p-6 bg-gradient-to-br from-[#1E0B39] via-[#7B1FA2] to-[#D4145A]">
+        <div className="p-6 ">
             {loading ? (
                 <p className="text-white">Loading...</p>
             ) : (
@@ -124,7 +124,7 @@ export const RegisterationApproval = () => {
        </div>
        <div className="">
        <h2 className="text-4xl font-bold mb-4 text-center">Approved Users</h2>
-        <div className="p-6 bg-gradient-to-br from-[#1E0B39] via-[#7B1FA2] to-[#D4145A]">
+        <div className="p-6">
             {loading ? (
                 <p className="text-white">Loading...</p>
             ) : (
@@ -138,7 +138,7 @@ export const RegisterationApproval = () => {
        </div>
        <div className="">
        <h2 className="text-4xl font-bold mb-4 text-center">Rejected Users</h2>
-        <div className="p-6 bg-gradient-to-br from-[#1E0B39] via-[#7B1FA2] to-[#D4145A]">
+        <div className="p-6">
             {loading ? (
                 <p className="text-white">Loading...</p>
             ) : (

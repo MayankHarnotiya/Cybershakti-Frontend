@@ -1,230 +1,222 @@
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { FaSpinner } from "react-icons/fa"
+import axios from "axios";
+import { useState } from "react";
+import { FaSpinner } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify"
 import { LuEye } from "react-icons/lu";
 
-export const Rejected=({fetchRejectedUsers,fetchApprovedUsers,rejectedUsers})=>{
- const [users,setUsers]=useState([])
- const [loading,setLoading]=useState(true)
- const token=localStorage.getItem("authToken")
- const [loadingReApprove,setLoadingReApprove]=useState([])
- const[loadingDelete,setLoadingDelete]=useState([])
- const BASE_URL = import.meta.env.VITE_BASE_URL;
+export const Rejected = ({ fetchRejectedUsers, fetchApprovedUsers, rejectedUsers }) => {
+    const [loadingReApprove, setLoadingReApprove] = useState({});
+    const [loadingDelete, setLoadingDelete] = useState({});
+    const [searchTerm, setSearchTerm] = useState("");
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(0);
 
-//  const fetchRejectedUsers=async ()=>{
-//     try {
-//         const token=localStorage.getItem("authToken")
-//         if(!token)
-//         {
-//             toast.error("Unauthorized.Please Login")
-//             setLoading(false)
-//             return
-//         }
+    const token = localStorage.getItem("authToken");
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-//         const response=await axios.get(`${BASE_URL}/admin/users/reject`,{
-//             headers:{
-//                 Authorization:`Bearer ${token}`,
-//                 "Content-Type":"application/json"
-//             }
-//         })
-
-//         console.log("rejected",response)
-//         setUsers(response.data)
-        
-//     } catch (error) {
-//         toast.error("Error Fetching users")
-//         console.log(error)
-//     }
-//     finally{
-//         setLoading(false)
-//     }
-// }
-
-
- const handleReApprove = async (userId) => {
-    setLoadingReApprove((prev) => ({ ...prev, [userId]: true }));
-    try {
-      const response = await axios.post(
-        `${BASE_URL}/admin/rejected/users/${userId}/approved`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    const handleReApprove = async (userId) => {
+        setLoadingReApprove((prev) => ({ ...prev, [userId]: true }));
+        try {
+            const response = await axios.post(
+                `${BASE_URL}/admin/rejected/users/${userId}/approved`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            toast.success(response.data || "User re-approved successfully");
+            fetchRejectedUsers();
+            fetchApprovedUsers();
+        } catch (error) {
+            const message = error?.response?.data || "Failed to re-approve user";
+            toast.error(message);
+        } finally {
+            setLoadingReApprove((prev) => ({ ...prev, [userId]: false }));
         }
-      );
-  
-      toast.success(response.data || "User re-approved successfully");
-  
-      fetch()
-      fetchRejectedUsers()
-      fetchApprovedUsers()
-    } catch (error) {
-      const message = error?.response?.data || "Failed to re-approve user";
-      toast.error(message);
-      console.error("Error re-approving user:", message);
-    } finally {
-      setLoadingReApprove((prev) => ({ ...prev, [userId]: false }));
-    }
-  };
-  
+    };
 
+    const handleDelete = async (userId) => {
+        if (!window.confirm("Are you sure you want to delete this user?")) return;
+        setLoadingDelete((prev) => ({ ...prev, [userId]: true }));
+        try {
+            const response = await axios.delete(
+                `${BASE_URL}/admin/rejected/users/${userId}/delete`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            toast.success(response.data || "User deleted successfully");
+            fetchRejectedUsers();
+        } catch (error) {
+            const message = error?.response?.data || "Failed to delete user";
+            toast.error(message);
+        } finally {
+            setLoadingDelete((prev) => ({ ...prev, [userId]: false }));
+        }
+    };
 
-const handleDelete=async (userId)=>{
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-       
-        
-    setLoadingDelete((prev) => ({ ...prev, [userId]: true }));
-    console.log("approve"+token)
-
-    try {
-        const response=await axios.delete(`${BASE_URL}/admin/rejected/users/${userId}/delete`,
-            {
-                headers:{
-                    Authorization:`Bearer ${token}`
-                }
-            }
-        )
-        toast.success(response.data || "User deleted successfully");
-        fetchRejectedUsers()
-    } catch (error) {
-        const message = error?.response?.data || "Failed to delete user";
-        toast.error(message);
-        console.error("Error deleting user:", message);
-    }
-    finally {
-        setLoadingDelete((prev) => ({ ...prev, [userId]: false }));
-    }
-}
-const fetchDocument = async (userId) => {
-    try {
-        const response = await axios.get(
-            `${BASE_URL}/admin/rejected/user/${userId}/view`,
-            {
+    const fetchDocument = async (userId) => {
+        try {
+            const response = await axios.get(`${BASE_URL}/admin/rejected/user/${userId}/view`, {
                 responseType: "blob",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const contentType = response.headers["content-type"];
+            if (!contentType.includes("application/pdf")) {
+                const text = await response.data.text();
+                toast.error(text || "Unknown error from server");
+                return;
             }
-        );
-
-        const contentType = response.headers["content-type"];
-
-        // Check if it's NOT a valid PDF (likely an error blob)
-        if (!contentType.includes("application/pdf")) {
-            const text = await response.data.text(); // Convert Blob to string
-            toast.error(text || "Unknown error from server");
-            console.error("Backend returned error blob:", text);
-            return;
+            const blob = new Blob([response.data], { type: contentType });
+            const url = URL.createObjectURL(blob);
+            window.open(url, "_blank");
+        } catch (error) {
+            toast.error("Failed to fetch document.");
         }
+    };
 
-        //  It's a valid PDF
-        const blob = new Blob([response.data], { type: contentType });
-        const url = URL.createObjectURL(blob);
-        window.open(url, "_blank");
+    const renderSortIcon = () => <i className="pi pi-sort-alt ml-2" />;
 
-    } catch (error) {
-        //  Handle 404 or other errors with Blob response
-        if (
-            error?.response?.data instanceof Blob &&
-            error.response?.headers["content-type"]?.includes("application/json")
-        ) {
-            const text = await error.response.data.text(); // Get error message from blob
-            toast.error(text || "Something went wrong");
-            console.error("Error from backend:", text);
-        } else {
-            //  Fallback error handling
-            toast.error(error?.message || "Failed to fetch document.");
-            console.error("Unexpected error:", error);
-        }
-    }
-}
+    return (
+        <div className="w-full flex flex-col bg-gray-100 rounded-lg overflow-x-auto">
+            <ToastContainer position="top-center" autoClose={3000} />
 
-return (
-    <div className="overflow-x-auto">
-    <ToastContainer position="top-center" autoClose={3000} />
+            {/* Header */}
+            <div className="w-full bg-purple-400 p-4 rounded-t-lg flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 className="text-xl font-semibold text-gray-700">Rejected Users</h2>
+                <div className="w-full md:w-72">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 rounded-md border bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                        <i className="pi pi-search absolute left-3 top-2.5 text-gray-500" />
+                    </div>
+                </div>
+            </div>
 
-    <table className="w-full border-collapse border border-gray-300 min-w-[700px]">
-        <thead>
-            <tr className="bg-gray-200">
-                <th className="border p-2">Full Name</th>
-                <th className="border p-2">Email</th>
-                <th className="border p-2">Username</th>
-                <th className="border p-2">Organization</th>
-                <th className="border p-2">Designation</th>
-                <th className="border p-2">Mobile Number</th>
-                <th className="border p-2">View Document</th>
-                <th className="border p-2">Actions</th>
-            </tr>
-        </thead>
+            {/* Table */}
+            <div className="flex-grow overflow-x-auto">
+                <table className="w-full text-left table-auto bg-white rounded-md shadow-sm">
+                    <thead className="bg-purple-300 sticky top-0 z-10">
+                        <tr className="text-center text-lg text-gray-800">
+                            <th className="p-4">Full Name {renderSortIcon()}</th>
+                            <th className="p-4">Email {renderSortIcon()}</th>
+                            <th className="p-4">Username {renderSortIcon()}</th>
+                            <th className="p-4">Organization {renderSortIcon()}</th>
+                            <th className="p-4">Designation {renderSortIcon()}</th>
+                            <th className="p-4">Mobile Number {renderSortIcon()}</th>
+                            <th className="p-4">View Document</th>
+                            <th className="p-4">Actions</th>
+                        </tr>
+                    </thead>
 
-        <tbody>
-            {rejectedUsers.length> 0 ? (
-                rejectedUsers.map((user) => (
-                    <tr key={user.id} className="text-center text-white">
-                        <td className="border p-2">{user.fullName}</td>
-                        <td className="border p-2">{user.email}</td>
-                        <td className="border p-2">{user.userName}</td>
-                        <td className="border p-2">{user.organisation}</td>
-                        <td className="border p-2">{user.designation}</td>
-                        <td className="border p-2">{user.mobileNumber}</td>
+                    <tbody>
+                        {rejectedUsers.length > 0 ? (
+                            rejectedUsers.map((user) => (
+                                <tr key={user.id} className="text-center text-gray-800 hover:bg-gray-50 transition">
+                                    <td className="p-4 border-b border-gray-200">{user.fullName}</td>
+                                    <td className="p-4 border-b border-gray-200">{user.email}</td>
+                                    <td className="p-4 border-b border-gray-200">{user.userName}</td>
+                                    <td className="p-4 border-b border-gray-200">{user.organisation}</td>
+                                    <td className="p-4 border-b border-gray-200">{user.designation}</td>
+                                    <td className="p-4 border-b border-gray-200">{user.mobileNumber}</td>
+                                    <td className="p-4 border-b border-gray-200">
+                                        <button
+                                            className="text-blue-600 hover:text-blue-800"
+                                            onClick={() => fetchDocument(user.id)}
+                                            title="View Document"
+                                        >
+                                            <LuEye size={20} />
+                                        </button>
+                                    </td>
+                                    <td className="p-4 border-b border-gray-200 flex justify-center gap-2 flex-wrap">
+                                        <button
+                                            className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded flex items-center justify-center gap-1"
+                                            onClick={() => handleReApprove(user.id)}
+                                            disabled={loadingReApprove[user.id]}
+                                        >
+                                            {loadingReApprove[user.id] ? (
+                                                <>
+                                                    <FaSpinner className="animate-spin" size={16} />
+                                                    <span className="text-xs">Re-approving...</span>
+                                                </>
+                                            ) : (
+                                                "Re-approve"
+                                            )}
+                                        </button>
+                                        <button
+                                            className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded flex items-center justify-center gap-1"
+                                            onClick={() => handleDelete(user.id)}
+                                            disabled={loadingDelete[user.id]}
+                                        >
+                                            {loadingDelete[user.id] ? (
+                                                <>
+                                                    <FaSpinner className="animate-spin" size={16} />
+                                                    <span className="text-xs">Deleting...</span>
+                                                </>
+                                            ) : (
+                                                "Delete"
+                                            )}
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="8" className="text-center p-6 text-gray-700 font-bold text-xl">
+                                    No rejected users found.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
 
-                        <td className="border p-2">
-                            <button
-                                className="text-blue-600 cursor-pointer hover:text-blue-800"
-                                onClick={() => fetchDocument(user.id)}
-                                title="View Document"
-                            >
-                                <LuEye size={20} />
-                            </button>
-                        </td>
+            {/* Pagination UI */}
+            <div className="bg-purple-50 p-4 flex flex-col md:flex-row md:justify-between items-center rounded-b-md shadow gap-4">
+                <div className="flex items-center gap-3">
+                    <label className="text-lg font-semibold text-gray-700">Show</label>
+                    <select
+                        value={itemsPerPage}
+                        onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                        className="p-2 border border-gray-300 rounded-md text-md focus:outline-none focus:ring-2 focus:ring-purple-300"
+                    >
+                        {[10, 20, 50].map((num) => (
+                            <option key={num} value={num}>
+                                {num}
+                            </option>
+                        ))}
+                    </select>
+                    <span className="text-lg font-semibold text-gray-700">entries</span>
+                </div>
 
-                        <td className="border p-2 flex gap-2 justify-center">
-                            {/* Re-approve button */}
-                            <button
-                                className="px-3 py-1 bg-green-600 hover:bg-green-700 cursor-pointer text-white rounded flex items-center justify-center gap-1"
-                                onClick={() => handleReApprove(user.id)}
-                                disabled={loadingReApprove[user.id]}
-                            >
-                                {loadingReApprove[user.id] ? (
-                                    <>
-                                        <FaSpinner className="animate-spin" size={16} />
-                                        <span className="text-xs">Re-approving...</span>
-                                    </>
-                                ) : (
-                                    "Re-approve"
-                                )}
-                            </button>
+                <div className="text-lg font-semibold text-gray-700">
+                    Showing {(currentPage * itemsPerPage) + 1}–{(currentPage + 1) * itemsPerPage}
+                </div>
 
-                            {/* Delete button */}
-                            <button
-                                className="px-3 py-1 bg-red-600 hover:bg-red-700 cursor-pointer text-white rounded flex items-center justify-center gap-1"
-                                onClick={() => handleDelete(user.id)}
-                                disabled={loadingDelete[user.id]}
-                            >
-                                {loadingDelete[user.id] ? (
-                                    <>
-                                        <FaSpinner className="animate-spin" size={16} />
-                                        <span className="text-xs">Deleting...</span>
-                                    </>
-                                ) : (
-                                    "Delete"
-                                )}
-                            </button>
-                        </td>
-                    </tr>
-                ))
-            ) : (
-                <tr>
-                    <td colSpan="8" className="text-center p-4 text-white font-bold text-xl">
-                        No rejected users found.
-                    </td>
-                </tr>
-            )}
-        </tbody>
-    </table>
-</div>
-)
-}
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            currentPage <= 0
+                                ? "bg-gray-300 text-gray-400 cursor-not-allowed"
+                                : "bg-purple-100 hover:bg-purple-200 text-purple-700"
+                        } transition`}
+                    >
+                        &lt;
+                    </button>
+                    <span className="bg-purple-500 text-white font-semibold px-3 py-1 rounded-full text-md shadow">
+                        {currentPage + 1}
+                    </span>
+                    <button
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                        className="px-3 py-1 rounded-full text-md font-medium bg-purple-100 hover:bg-purple-200 text-purple-700 transition"
+                    >
+                        &gt;
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
