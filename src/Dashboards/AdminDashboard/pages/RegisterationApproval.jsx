@@ -8,8 +8,9 @@ import { Rejected } from "../Components/Rejected"
 import axios from "axios"
 
 
+
 export const RegisterationApproval = () => {
-     const [unApproved, setUnapprovedUsers] = useState([])
+    const [unApproved, setUnapprovedUsers] = useState([])
     const [approvedUsers,setApprovedUsers]=useState([])
     const [rejectedUsers,setRejectedUsers]=useState([])
     const [loading, setLoading] = useState(false)
@@ -27,7 +28,6 @@ export const RegisterationApproval = () => {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'content-type': 'application/json'
-
                     }
                 })
                 console.log("unapproved",response)

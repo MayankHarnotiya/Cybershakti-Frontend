@@ -28,7 +28,7 @@ export const Navbar = () => {
     }
 
     return (
-<div className="sticky top-0 mt-10 z-50 h-20 w-400 ml-30 bg-amber-200/30 backdrop-blur-xl flex items-center px-6 justify-between rounded-full shadow-md">
+<div className="sticky top-0 mt-10 z-50 h-20 w-400 ml-30 bg-amber-100/20 backdrop-blur-xl flex items-center px-6 justify-between rounded-full shadow-md border">
 {/* Logo */}
             <Link to="/" className="flex items-center">
                 <img src="/cdac-logo.png" alt="cdac" className="h-12" />

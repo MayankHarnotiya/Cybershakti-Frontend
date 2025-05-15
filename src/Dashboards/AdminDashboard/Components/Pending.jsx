@@ -90,7 +90,7 @@ export const Pending = ({ pendingUsers, fetchPendingUsers, fetchApprovedUsers, f
                             placeholder="Search"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full pl-10 pr-4 py-2 rounded-md border bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
                         <i className="pi pi-search absolute left-3 top-2.5 text-gray-500" />
                     </div>

@@ -9,8 +9,8 @@ export const Layout = () => {
     const isAuthPage = location.pathname === "/signup" || location.pathname === "/login";
 
     return (
-        <div className="flex flex-col min-h-screen w-full bg-amber-50">
-            {!isAuthPage && <Navbar />}
+        <div className="flex flex-col min-h-screen w-full bg-[#fde8d1]">
+            {!isAuthPage &&  <Navbar /> }
 
             <main className="flex-grow w-full">
                 <Outlet />

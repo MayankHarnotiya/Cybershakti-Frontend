@@ -287,7 +287,6 @@ export const AddTrainingModal = ({ onClose, onSuccess, initialData = null, mode 
                     </button>
                 </div>
             </form>
-
         </>
     );
 };
